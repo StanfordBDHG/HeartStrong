@@ -1,0 +1,81 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import { videoSections } from "../data/site";
+import type { VideoPlacement } from "../data/site";
+
+interface Props {
+  placement: VideoPlacement;
+  eyebrow: string;
+  title: string;
+  intro: string;
+  id?: string;
+  compact?: boolean;
+}
+
+const { placement, eyebrow, title, intro, id, compact = false } = Astro.props;
+
+const sections = videoSections
+  .map((section) => ({
+    ...section,
+    videos: section.videos.filter((video) =>
+      video.placements.includes(placement),
+    ),
+  }))
+  .filter((section) => section.videos.length > 0);
+---
+
+<section id={id} class="section-block shell">
+  <div class="section-heading">
+    <p class="eyebrow">{eyebrow}</p>
+    <h2>{title}</h2>
+    <p>{intro}</p>
+  </div>
+
+  <div class="video-section-stack">
+    {
+      sections.map((section) => (
+        <section class="video-library-section surface-card">
+          <div class="video-library-section__header">
+            <p class="eyebrow">{section.title}</p>
+            <p>{section.description}</p>
+          </div>
+
+          <div
+            class:list={[
+              "video-embed-grid",
+              compact && "video-embed-grid--compact",
+            ]}
+          >
+            {section.videos.map((video) => (
+              <article class="video-card" data-reveal>
+                <div class="video-card__frame">
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}`}
+                    title={video.title}
+                    loading="lazy"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen
+                  />
+                </div>
+
+                <div class="video-card__body">
+                  <p class="chip chip--tone">ENGAGE-HF video</p>
+                  <h3>{video.title}</h3>
+                  <p class="video-card__context">{video.context}</p>
+                  <p class="video-card__description">{video.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</section>

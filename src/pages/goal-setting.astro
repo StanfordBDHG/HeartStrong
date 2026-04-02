@@ -1,0 +1,79 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import GoalWizard from "../components/GoalWizard.astro";
+import HeroPanel from "../components/HeroPanel.astro";
+import PageNavigator from "../components/PageNavigator.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { pageHeroes, siteTitle } from "../data/site";
+import { withBase } from "../lib/urls";
+
+const hero = pageHeroes["/goal-setting"];
+const smartCards = [
+  { title: "Specific", body: "Name the exact action you want to take." },
+  { title: "Measurable", body: "Choose something you can track or notice." },
+  { title: "Attainable", body: "Keep it realistic for right now." },
+  { title: "Relevant", body: "Tie it to what matters most in your life." },
+  { title: "Timebound", body: "Say how often or when you will do it." },
+];
+---
+
+<BaseLayout
+  title={`${siteTitle} | Goal Setting`}
+  description={hero.intro}
+  currentPath="/goal-setting"
+  theme="goal"
+>
+  <HeroPanel hero={hero} />
+
+  <section class="section-block shell" data-reveal>
+    <div class="section-heading">
+      <p class="eyebrow">SMART framework</p>
+      <h2>A strong goal is small enough to act on this week.</h2>
+      <p>
+        The best goals are practical and connected to your life, not somebody
+        else&apos;s ideal plan. Start with what matters to you right now.
+      </p>
+    </div>
+
+    <div class="card-grid card-grid--five">
+      {
+        smartCards.map((item) => (
+          <article class="surface-card">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <GoalWizard />
+
+  <section class="section-block shell" data-reveal>
+    <div class="callout-band">
+      <div class="callout-band__content">
+        <p class="eyebrow">Stay accountable</p>
+        <h3>Share your goal with family, friends, and your healthcare team.</h3>
+        <p>
+          Even one sentence written in your booklet can make the next
+          appointment more focused and more useful.
+        </p>
+      </div>
+      <a
+        class="button button--secondary"
+        href={withBase("/resources")}
+        data-astro-prefetch="hover"
+      >
+        Print a tracker
+      </a>
+    </div>
+  </section>
+
+  <PageNavigator currentPath="/goal-setting" />
+</BaseLayout>

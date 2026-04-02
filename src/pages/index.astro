@@ -1,0 +1,135 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import HeroPanel from "../components/HeroPanel.astro";
+import PageNavigator from "../components/PageNavigator.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import {
+  focusAreaCards,
+  pageHeroes,
+  quickSupport,
+  siteTitle,
+  welcomeHighlights,
+} from "../data/site";
+import { withBase } from "../lib/urls";
+
+const hero = pageHeroes["/"];
+---
+
+<BaseLayout
+  title={`${siteTitle} | Welcome`}
+  description={hero.intro}
+  currentPath="/"
+  theme="welcome"
+>
+  <HeroPanel hero={hero}>
+    <div class="hero-inline-note surface-card">
+      <h2 class="hero-inline-note__title">Built for everyday use</h2>
+      <p>
+        Open HeartStrong when you want a calm refresher, a printable tracker, or
+        one place to keep the booklet guidance close by.
+      </p>
+    </div>
+  </HeroPanel>
+
+  <section id="welcome-highlights" class="section-block shell" data-reveal>
+    <div class="section-heading">
+      <p class="eyebrow">What this site helps you do</p>
+      <h2>Simple guidance that supports the booklet, not replaces it.</h2>
+    </div>
+
+    <div class="card-grid">
+      {
+        welcomeHighlights.map((item) => (
+          <article class="surface-card">
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section id="welcome-focus-areas" class="section-block shell" data-reveal>
+    <div class="section-heading">
+      <p class="eyebrow">Choose a focus area</p>
+      <h2>Move through the topics at your own pace.</h2>
+      <p>
+        Each page has one job: teach the basics, help you plan, explain
+        treatment, or give you a resource to bring back to your care team.
+      </p>
+    </div>
+
+    <div class="card-grid card-grid--four">
+      {
+        focusAreaCards.map((item) => (
+          <a
+            class="focus-card"
+            href={withBase(item.href)}
+            data-astro-prefetch="hover"
+          >
+            <p class="eyebrow">{item.title}</p>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section-block shell" data-reveal>
+    <div class="callout-band">
+      <div class="callout-band__content">
+        <p class="eyebrow">How to use HeartStrong</p>
+        <h3>Bring the website, booklet, and your questions together.</h3>
+        <p>
+          Review a page before your visit, print what you need, and write the
+          important takeaways into your booklet so nothing gets lost between
+          appointments.
+        </p>
+      </div>
+      <a
+        class="button button--primary"
+        href={withBase("/hf-basics")}
+        data-astro-prefetch="hover"
+      >
+        Start with HF basics
+      </a>
+    </div>
+  </section>
+
+  <section class="section-block shell" data-reveal>
+    <div class="two-column">
+      <article class="surface-card">
+        <p class="eyebrow">Need support now?</p>
+        <h3>Urgent symptoms need urgent care.</h3>
+        <p>{quickSupport.emergencyLabel}</p>
+        <p>{quickSupport.disclaimer}</p>
+      </article>
+
+      <article class="surface-card">
+        <p class="eyebrow">Veterans Crisis Line</p>
+        <h3>Call {quickSupport.crisisPhone}</h3>
+        <p>
+          Text {quickSupport.crisisText} or visit the official crisis line site for
+          immediate help.
+        </p>
+        <a
+          class="button button--ghost"
+          href={quickSupport.crisisUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Open crisis support
+        </a>
+      </article>
+    </div>
+  </section>
+
+  <PageNavigator currentPath="/" />
+</BaseLayout>

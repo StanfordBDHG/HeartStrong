@@ -1,0 +1,41 @@
+# This source file is part of the Stanford HeartStrong open-source project
+#
+# SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+#
+# SPDX-License-Identifier: MIT
+
+# dependencies
+/node_modules
+.npm/
+
+# Astro build outputs
+/.astro
+/dist
+/output
+/tmp
+
+# testing and linting
+/coverage
+.eslintcache
+.prettier-cache
+*.tsbuildinfo
+eslint_report.json
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local files
+.DS_Store
+.idea/
+.vscode/
+.netlify/
+.vercel/
+
+# environment files
+.env
+.env.*
+!.env.example

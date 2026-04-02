@@ -1,0 +1,45 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { siteTitle } from "../data/site";
+import { withBase } from "../lib/urls";
+---
+
+<BaseLayout
+  title={`${siteTitle} | Page Not Found`}
+  description="Return to the HeartStrong home page or jump to one of the main focus areas."
+  currentPath="/404"
+  theme="welcome"
+  robots="noindex,nofollow"
+>
+  <section class="section-block shell" data-reveal>
+    <div class="hero-inline-note surface-card">
+      <p class="eyebrow">Page not found</p>
+      <h1>Let&apos;s get you back to HeartStrong.</h1>
+      <p>
+        The page you tried to open is not here. Return to the welcome page or go
+        straight to the HeartStrong topic you need right now.
+      </p>
+      <div class="hero-panel__actions">
+        <a
+          class="button button--primary"
+          href={withBase("/")}
+          data-astro-prefetch="hover">Go to Welcome</a
+        >
+        <a
+          class="button button--ghost"
+          href={withBase("/resources")}
+          data-astro-prefetch="hover"
+        >
+          Open Resources
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

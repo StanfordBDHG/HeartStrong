@@ -1,0 +1,39 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import MascotFigure from "./MascotFigure.astro";
+import { quickSupport } from "../data/site";
+---
+
+<section class="support-ribbon" data-support-ribbon-banner>
+  <div class="shell support-ribbon__inner">
+    <div class="support-ribbon__mascot">
+      <MascotFigure
+        mascotKey="welcome"
+        size="small"
+        showLabel={false}
+        showScene={false}
+        decorative={true}
+      />
+    </div>
+    <p>
+      <strong>Education only.</strong>
+      {quickSupport.disclaimer}
+    </p>
+    <div class="support-ribbon__actions">
+      <button
+        class="support-ribbon__dismiss"
+        type="button"
+        data-dismiss-support-ribbon
+        aria-label="Dismiss education notice"
+      >
+        Dismiss
+      </button>
+    </div>
+  </div>
+</section>

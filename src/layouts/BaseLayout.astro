@@ -1,0 +1,116 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import { ClientRouter } from "astro:transitions";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SupportRibbon from "../components/SupportRibbon.astro";
+import {
+  SUPPORT_RIBBON_STORAGE_KEY,
+  THEME_COLORS,
+} from "../lib/siteChromeConfig";
+import { resolveSiteUrl, withBase } from "../lib/urls";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  currentPath: string;
+  theme?: string;
+  robots?: string;
+}
+
+const {
+  title,
+  description,
+  currentPath,
+  theme = "welcome",
+  robots = "index,follow",
+} = Astro.props;
+const canonicalUrl =
+  Astro.site ? resolveSiteUrl(Astro.site, currentPath) : undefined;
+const sitemapUrl =
+  Astro.site ? resolveSiteUrl(Astro.site, "/sitemap-index.xml") : undefined;
+---
+
+<!doctype html>
+<html
+  lang="en"
+  data-color-scheme="light"
+  data-support-ribbon="visible"
+  data-theme-color-light={THEME_COLORS.light}
+  data-theme-color-dark={THEME_COLORS.dark}
+  data-support-ribbon-storage-key={SUPPORT_RIBBON_STORAGE_KEY}
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content={THEME_COLORS.light} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content={robots} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <link rel="icon" href={withBase("/favicon.svg")} type="image/svg+xml" />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl.toString()} />}
+    {
+      canonicalUrl && (
+        <meta property="og:url" content={canonicalUrl.toString()} />
+      )
+    }
+    {sitemapUrl && <link rel="sitemap" href={sitemapUrl.toString()} />}
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const meta = document.querySelector('meta[name="theme-color"]');
+        const themeColors = {
+          light: root.dataset.themeColorLight ?? "#9A1B1A",
+          dark: root.dataset.themeColorDark ?? "#152231",
+        };
+        const supportRibbonStorageKey =
+          root.dataset.supportRibbonStorageKey ??
+          "heartstrong-support-ribbon-dismissed";
+        const scheme =
+          window.matchMedia("(prefers-color-scheme: dark)").matches ?
+            "dark"
+          : "light";
+
+        root.dataset.colorScheme = scheme;
+        root.style.colorScheme = scheme;
+        meta?.setAttribute("content", themeColors[scheme]);
+
+        try {
+          root.dataset.supportRibbon =
+            window.localStorage.getItem(supportRibbonStorageKey) === "true" ?
+              "hidden"
+            : "visible";
+        } catch {
+          root.dataset.supportRibbon = "visible";
+        }
+      })();
+    </script>
+    <ClientRouter fallback="swap" />
+  </head>
+  <body class="site-body" data-theme={theme}>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <SiteHeader currentPath={currentPath} />
+    <SupportRibbon />
+    <main id="main-content" class="site-main">
+      <slot />
+    </main>
+    <SiteFooter />
+    <script>
+      import "../scripts/siteChrome.ts";
+    </script>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import HeroPanel from "../components/HeroPanel.astro";
+import PageNavigator from "../components/PageNavigator.astro";
+import TreatmentExplorer from "../components/TreatmentExplorer.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { pageHeroes, siteTitle } from "../data/site";
+
+const hero = pageHeroes["/treatment-options"];
+const medTips = [
+  {
+    title: "Try it",
+    body: "If a new medication or dose makes you feel worse, tell your care team. Adjustments are part of the process.",
+  },
+  {
+    title: "Give it time",
+    body: "Some side effects get better after a few days or weeks as your body adjusts.",
+  },
+  {
+    title: "Teamwork",
+    body: "Tell your team what matters to you. Care should fit your life, not fight it.",
+  },
+  {
+    title: "Targeting strength",
+    body: "Dose increases are often about protecting the heart, even if you already feel okay.",
+  },
+  {
+    title: "Teach yourself",
+    body: "Use the symptom tracker to notice patterns and learn why each medication matters.",
+  },
+];
+---
+
+<BaseLayout
+  title={`${siteTitle} | Treatment Options`}
+  description={hero.intro}
+  currentPath="/treatment-options"
+  theme="treatment"
+>
+  <HeroPanel hero={hero} />
+
+  <section class="section-block shell" data-reveal>
+    <div class="two-column">
+      <article class="surface-card">
+        <p class="eyebrow">Heart training program</p>
+        <h2>
+          These therapies can help you live longer, feel better, and stay out of
+          the hospital.
+        </h2>
+        <p>
+          All four classes are used for HFrEF, and some are used for HFpEF. Your
+          care team chooses what fits your heart function, symptoms, kidneys,
+          blood pressure, and goals.
+        </p>
+      </article>
+
+      <article class="surface-card">
+        <p class="eyebrow">Before your visit</p>
+        <h3>
+          Bring your medication tracker and write down any side effects or
+          questions.
+        </h3>
+        <p>
+          A clear list of your doses, how you feel, and what you are wondering
+          about can make each appointment more productive.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <TreatmentExplorer />
+
+  <section class="section-block shell" data-reveal>
+    <div class="section-heading">
+      <p class="eyebrow">HeartStrong tips for meds</p>
+      <h2>Small habits lead to big results.</h2>
+    </div>
+
+    <div class="card-grid card-grid--five">
+      {
+        medTips.map((item) => (
+          <article class="surface-card">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <PageNavigator currentPath="/treatment-options" />
+</BaseLayout>

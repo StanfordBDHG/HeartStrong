@@ -1,0 +1,65 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import HeroPanel from "../components/HeroPanel.astro";
+import PageNavigator from "../components/PageNavigator.astro";
+import ResourceLibrary from "../components/ResourceLibrary.astro";
+import VideoLibrary from "../components/VideoLibrary.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { pageHeroes, siteTitle } from "../data/site";
+
+const hero = pageHeroes["/resources"];
+const resourceHighlights = [
+  {
+    title: "Print trackers when you need them",
+    body: "Vitals, appointments, and hospitalization logs are available in print-friendly pages.",
+  },
+  {
+    title: "Keep video links close by",
+    body: "ENGAGE-HF resources give you a quick way to revisit key topics between visits.",
+  },
+  {
+    title: "Bring everything back to the booklet",
+    body: "Use the site for support, then write important details into your HeartStrong guide.",
+  },
+];
+---
+
+<BaseLayout
+  title={`${siteTitle} | Resources`}
+  description={hero.intro}
+  currentPath="/resources"
+  theme="resources"
+>
+  <HeroPanel hero={hero} />
+
+  <section class="section-block shell" data-reveal>
+    <div class="card-grid">
+      {
+        resourceHighlights.map((item) => (
+          <article class="surface-card">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <ResourceLibrary />
+
+  <VideoLibrary
+    id="resource-videos"
+    placement="resources"
+    eyebrow="ENGAGE-HF video library"
+    title="Keep learning between appointments."
+    intro="Use these embedded ENGAGE-HF videos when you want a refresher on the app, medicines, symptom tracking, and daily routines that support your heart."
+  />
+
+  <PageNavigator currentPath="/resources" />
+</BaseLayout>

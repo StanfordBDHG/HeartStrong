@@ -1,0 +1,63 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { siteTitle } from "../../data/site";
+
+const rows = Array.from({ length: 8 });
+---
+
+<BaseLayout
+  title={`${siteTitle} | Vitals Tracker`}
+  description="Printable vitals tracker for weight, blood pressure, heart rate, symptoms, and medication check-ins."
+  currentPath="/printables/vitals"
+  theme="resources"
+>
+  <section class="section-block shell printable-shell" data-reveal>
+    <div class="print-sheet surface-card">
+      <div class="print-sheet__header">
+        <div>
+          <p class="eyebrow">Printable tracker</p>
+          <h1>Vitals</h1>
+        </div>
+        <button
+          class="button button--primary print-only-button"
+          type="button"
+          data-print-page
+        >
+          Print this page
+        </button>
+      </div>
+
+      <table class="tracker-table">
+        <thead>
+          <tr>
+            <th>Date / Time</th>
+            <th>Weight</th>
+            <th>BP / HR</th>
+            <th>Meds taken?</th>
+            <th>Symptoms</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            rows.map(() => (
+              <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</BaseLayout>
