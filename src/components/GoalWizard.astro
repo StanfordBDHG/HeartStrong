@@ -10,14 +10,16 @@ import MascotFigure from "./MascotFigure.astro";
 import { goalPrompts } from "../data/site";
 import type { GoalPrompt } from "../data/site";
 
-const getGoalPrompt = (id: GoalPrompt["id"]): GoalPrompt => {
+const getGoalPrompt = <Id extends GoalPrompt["id"]>(
+  id: Id,
+): Extract<GoalPrompt, { id: Id }> => {
   const prompt = goalPrompts.find((candidate) => candidate.id === id);
 
   if (!prompt) {
     throw new Error(`Missing goal prompt: ${id}`);
   }
 
-  return prompt;
+  return prompt as Extract<GoalPrompt, { id: Id }>;
 };
 
 const priorityPrompt = getGoalPrompt("priority");
@@ -307,53 +309,88 @@ const supportPrompt = getGoalPrompt("support");
           const summaryAnnouncer = root.querySelector<HTMLElement>(
             "[data-summary-announcer]",
           );
+          const requiredElements = [
+            ["[data-goal-wizard]", form],
+            ["[data-prev]", prevButton],
+            ["[data-next]", nextButton],
+            ["[data-progress-fill]", progressFill],
+            ["[data-progress-label]", progressLabel],
+            ['input[name="priority"]', priorityField],
+            ['input[name="priorityCustom"]', priorityCustom],
+            ["[data-summary-text]", summaryText],
+            ["[data-summary-priority]", summaryPriority],
+            ["[data-summary-barrier]", summaryBarrier],
+            ["[data-summary-action]", summaryAction],
+            ["[data-summary-frequency]", summaryFrequency],
+            ["[data-summary-support]", summarySupport],
+            ["[data-print-summary-text]", printSummaryText],
+            ["[data-print-summary-priority]", printSummaryPriority],
+            ["[data-print-summary-barrier]", printSummaryBarrier],
+            ["[data-print-summary-action]", printSummaryAction],
+            ["[data-print-summary-frequency]", printSummaryFrequency],
+            ["[data-print-summary-support]", printSummarySupport],
+            ["[data-copy-goal]", copyButton],
+            ["[data-print-goal]", printButton],
+          ] as const;
 
-          if (
-            !form ||
-            !prevButton ||
-            !nextButton ||
-            !progressFill ||
-            !progressLabel ||
-            !priorityField ||
-            !priorityCustom ||
-            !summaryText ||
-            !summaryPriority ||
-            !summaryBarrier ||
-            !summaryAction ||
-            !summaryFrequency ||
-            !summarySupport ||
-            !printSummaryText ||
-            !printSummaryPriority ||
-            !printSummaryBarrier ||
-            !printSummaryAction ||
-            !printSummaryFrequency ||
-            !printSummarySupport ||
-            !copyButton ||
-            !printButton
-          ) {
+          if (requiredElements.some(([, element]) => !element)) {
+            if (import.meta.env.DEV) {
+              const missingElements = requiredElements
+                .filter(([, element]) => !element)
+                .map(([selector]) => selector);
+
+              console.warn(
+                "[GoalWizard:initGoalWizards] Missing required elements:",
+                missingElements.join(", "),
+              );
+            }
+
             return;
           }
+
+          const wizardForm = form!;
+          const wizardPrevButton = prevButton!;
+          const wizardNextButton = nextButton!;
+          const wizardProgressFill = progressFill!;
+          const wizardProgressLabel = progressLabel!;
+          const wizardPriorityField = priorityField!;
+          const wizardPriorityCustom = priorityCustom!;
+          const wizardSummaryText = summaryText!;
+          const wizardSummaryPriority = summaryPriority!;
+          const wizardSummaryBarrier = summaryBarrier!;
+          const wizardSummaryAction = summaryAction!;
+          const wizardSummaryFrequency = summaryFrequency!;
+          const wizardSummarySupport = summarySupport!;
+          const wizardPrintSummaryText = printSummaryText!;
+          const wizardPrintSummaryPriority = printSummaryPriority!;
+          const wizardPrintSummaryBarrier = printSummaryBarrier!;
+          const wizardPrintSummaryAction = printSummaryAction!;
+          const wizardPrintSummaryFrequency = printSummaryFrequency!;
+          const wizardPrintSummarySupport = printSummarySupport!;
+          const wizardCopyButton = copyButton!;
+          const wizardPrintButton = printButton!;
 
           let currentStep = 0;
 
           const syncPrioritySelection = () => {
-            const hasCustomPriority = priorityCustom.value.trim().length > 0;
+            const hasCustomPriority =
+              wizardPriorityCustom.value.trim().length > 0;
 
             if (hasCustomPriority) {
-              priorityField.value = "";
+              wizardPriorityField.value = "";
             }
 
             priorityButtons.forEach((candidate) => {
               const isSelected =
                 !hasCustomPriority &&
-                candidate.dataset.value === priorityField.value;
+                candidate.dataset.value === wizardPriorityField.value;
               candidate.classList.toggle("is-selected", isSelected);
               candidate.setAttribute("aria-pressed", String(isSelected));
             });
           };
 
           const buildSummary = () => {
-            const data = new FormData(form);
+            const data = new FormData(wizardForm);
             const summary = buildGoalSummary({
               priority: String(data.get("priority") ?? ""),
               priorityCustom: String(data.get("priorityCustom") ?? ""),
@@ -363,23 +400,23 @@ const supportPrompt = getGoalPrompt("support");
               support: String(data.get("support") ?? ""),
             });
 
-            summaryPriority.textContent = summary.priority;
-            summaryBarrier.textContent = summary.barrier;
-            summaryAction.textContent = summary.action;
-            summaryFrequency.textContent = summary.frequency;
-            summarySupport.textContent = summary.support;
-            summaryText.textContent = summary.statement;
-            printSummaryPriority.textContent = summary.priority;
-            printSummaryBarrier.textContent = summary.barrier;
-            printSummaryAction.textContent = summary.action;
-            printSummaryFrequency.textContent = summary.frequency;
-            printSummarySupport.textContent = summary.support;
-            printSummaryText.textContent = summary.statement;
+            wizardSummaryPriority.textContent = summary.priority;
+            wizardSummaryBarrier.textContent = summary.barrier;
+            wizardSummaryAction.textContent = summary.action;
+            wizardSummaryFrequency.textContent = summary.frequency;
+            wizardSummarySupport.textContent = summary.support;
+            wizardSummaryText.textContent = summary.statement;
+            wizardPrintSummaryPriority.textContent = summary.priority;
+            wizardPrintSummaryBarrier.textContent = summary.barrier;
+            wizardPrintSummaryAction.textContent = summary.action;
+            wizardPrintSummaryFrequency.textContent = summary.frequency;
+            wizardPrintSummarySupport.textContent = summary.support;
+            wizardPrintSummaryText.textContent = summary.statement;
           };
 
           const announceSummary = () => {
             if (!summaryAnnouncer) return;
-            summaryAnnouncer.textContent = summaryText.textContent ?? "";
+            summaryAnnouncer.textContent = wizardSummaryText.textContent ?? "";
           };
 
           const renderStep = () => {
@@ -389,30 +426,30 @@ const supportPrompt = getGoalPrompt("support");
               step.toggleAttribute("hidden", !isActive);
             });
 
-            prevButton.disabled = currentStep === 0;
-            nextButton.textContent =
+            wizardPrevButton.disabled = currentStep === 0;
+            wizardNextButton.textContent =
               currentStep === steps.length - 1 ? "Review goal" : "Next step";
-            progressFill.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
-            progressLabel.textContent = `Step ${currentStep + 1} of ${steps.length}`;
+            wizardProgressFill.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
+            wizardProgressLabel.textContent = `Step ${currentStep + 1} of ${steps.length}`;
           };
 
           priorityButtons.forEach((button) => {
             button.addEventListener("click", () => {
               const value = button.dataset.value ?? "";
-              priorityField.value = value;
-              priorityCustom.value = "";
+              wizardPriorityField.value = value;
+              wizardPriorityCustom.value = "";
               syncPrioritySelection();
               buildSummary();
               announceSummary();
             });
           });
 
-          form.addEventListener("input", () => {
+          wizardForm.addEventListener("input", () => {
             syncPrioritySelection();
             buildSummary();
           });
 
-          form.addEventListener("focusout", (event) => {
+          wizardForm.addEventListener("focusout", (event) => {
             if (
               event.target instanceof HTMLInputElement ||
               event.target instanceof HTMLTextAreaElement
@@ -421,13 +458,13 @@ const supportPrompt = getGoalPrompt("support");
             }
           });
 
-          prevButton.addEventListener("click", () => {
+          wizardPrevButton.addEventListener("click", () => {
             currentStep = Math.max(0, currentStep - 1);
             renderStep();
             announceSummary();
           });
 
-          nextButton.addEventListener("click", () => {
+          wizardNextButton.addEventListener("click", () => {
             if (currentStep < steps.length - 1) {
               currentStep += 1;
             }
@@ -436,30 +473,30 @@ const supportPrompt = getGoalPrompt("support");
             announceSummary();
           });
 
-          copyButton.addEventListener("click", async () => {
+          wizardCopyButton.addEventListener("click", async () => {
             const text = [
-              summaryText.textContent,
-              `Barrier: ${summaryBarrier.textContent}`,
-              `Action: ${summaryAction.textContent}`,
-              `How often: ${summaryFrequency.textContent}`,
-              `Support: ${summarySupport.textContent}`,
+              wizardSummaryText.textContent,
+              `Barrier: ${wizardSummaryBarrier.textContent}`,
+              `Action: ${wizardSummaryAction.textContent}`,
+              `How often: ${wizardSummaryFrequency.textContent}`,
+              `Support: ${wizardSummarySupport.textContent}`,
             ].join("\n");
 
             try {
               await navigator.clipboard.writeText(text);
-              copyButton.textContent = "Copied";
+              wizardCopyButton.textContent = "Copied";
               window.setTimeout(() => {
-                copyButton.textContent = "Copy goal";
+                wizardCopyButton.textContent = "Copy goal";
               }, 1600);
             } catch {
-              copyButton.textContent = "Copy not available";
+              wizardCopyButton.textContent = "Copy not available";
               window.setTimeout(() => {
-                copyButton.textContent = "Copy goal";
+                wizardCopyButton.textContent = "Copy goal";
               }, 1800);
             }
           });
 
-          printButton.addEventListener("click", () => {
+          wizardPrintButton.addEventListener("click", () => {
             buildSummary();
             document.documentElement.dataset.printScope = "goal-summary";
             let timeoutId: number | undefined;

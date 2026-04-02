@@ -4,10 +4,17 @@
 //
 // SPDX-License-Identifier: MIT
 
+export type RouteName =
+  | "/"
+  | "/hf-basics"
+  | "/goal-setting"
+  | "/treatment-options"
+  | "/resources";
+
 export interface NavItem {
   slug: string;
   title: string;
-  href: string;
+  href: RouteName;
   shortTitle: string;
 }
 
@@ -24,12 +31,42 @@ export interface PageHero {
   cta?: CallToAction;
 }
 
-export interface GoalPrompt {
-  id: string;
+export type GoalPromptId =
+  | "priority"
+  | "priorityCustom"
+  | "barrier"
+  | "action"
+  | "frequency"
+  | "support";
+
+interface BaseGoalPrompt {
+  id: GoalPromptId;
   label: string;
-  type: "choice" | "text" | "textarea";
-  options?: string[];
 }
+
+export interface ChoiceGoalPrompt extends BaseGoalPrompt {
+  id: "priority";
+  type: "choice";
+  options: string[];
+}
+
+export interface TextGoalPrompt<
+  Id extends Exclude<GoalPromptId, "priority"> = Exclude<
+    GoalPromptId,
+    "priority"
+  >,
+> extends BaseGoalPrompt {
+  id: Id;
+  type: "text" | "textarea";
+}
+
+export type GoalPrompt =
+  | ChoiceGoalPrompt
+  | TextGoalPrompt<"priorityCustom">
+  | TextGoalPrompt<"barrier">
+  | TextGoalPrompt<"action">
+  | TextGoalPrompt<"frequency">
+  | TextGoalPrompt<"support">;
 
 export interface MedicationClass {
   slug: string;
@@ -48,8 +85,6 @@ export interface ResourceItem {
   kind: "printable" | "guide" | "external";
   href: string;
   description: string;
-  printable: boolean;
-  external: boolean;
 }
 
 export interface VideoItem {
@@ -108,7 +143,7 @@ export const navItems: NavItem[] = [
   },
 ];
 
-export const pageHeroes: Record<string, PageHero> = {
+export const pageHeroes: Record<RouteName, PageHero> = {
   "/": {
     eyebrow: "Patient Action Guide",
     title: "HeartStrong brings your booklet to life.",
@@ -196,7 +231,11 @@ export const welcomeHighlights = [
   },
 ];
 
-export const focusAreaCards = [
+export const focusAreaCards: Array<{
+  title: string;
+  href: RouteName;
+  description: string;
+}> = [
   {
     title: "HF Basics",
     href: "/hf-basics",
@@ -578,8 +617,6 @@ export const resourceItems: ResourceItem[] = [
     href: "/printables/vitals",
     description:
       "Printable daily tracker for weight, blood pressure, heart rate, symptoms, and whether medications were taken.",
-    printable: true,
-    external: false,
   },
   {
     slug: "appointment-log",
@@ -588,8 +625,6 @@ export const resourceItems: ResourceItem[] = [
     href: "/printables/appointments",
     description:
       "Bring this sheet to every visit so you can record questions, medication changes, tests, and next steps.",
-    printable: true,
-    external: false,
   },
   {
     slug: "hospital-log",
@@ -598,8 +633,6 @@ export const resourceItems: ResourceItem[] = [
     href: "/printables/hospital-visits",
     description:
       "Track what happened during an emergency or hospital visit, including medication changes and follow-up plans.",
-    printable: true,
-    external: false,
   },
   {
     slug: "share-hf",
@@ -608,8 +641,6 @@ export const resourceItems: ResourceItem[] = [
     href: "https://decisionaid.ca/share-hf/",
     description:
       "Shared decision-making resource to help patients and care teams talk through treatment options together.",
-    printable: false,
-    external: true,
   },
   {
     slug: "crisis-line",
@@ -618,7 +649,5 @@ export const resourceItems: ResourceItem[] = [
     href: "https://www.veteranscrisisline.net/",
     description:
       "Immediate support for Veterans in crisis. Call 988 and press 1, text 838255, or chat online.",
-    printable: false,
-    external: true,
   },
 ];

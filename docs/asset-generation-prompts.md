@@ -140,7 +140,7 @@ Avoid: sticker outlines, exaggerated motion effects, clutter, duplicate role pos
 
 These prompts are for separate background objects or boards that the website can layer behind the mascot. Keep props isolated from the character so they can be repositioned independently across breakpoints.
 
-For dark mode, do not generate a new scene from scratch. Edit the light-mode asset and preserve the exact same composition, objects, spacing, and visual role while only adapting palette, glow, and contrast for dark backgrounds.
+For dark mode, do not generate a new scene from scratch. Edit the light-mode asset and preserve the same composition, objects, spacing, and visual role; only adapt palette, glow, and contrast for dark backgrounds.
 
 ### Welcome scene prop
 

@@ -1804,16 +1804,6 @@ html[data-color-scheme="dark"] .focus-card {
   margin-top: 0.65rem;
 }
 
-[data-reveal] {
-  opacity: 1;
-  transform: none;
-}
-
-[data-reveal].is-visible {
-  opacity: 1;
-  transform: none;
-}
-
 @keyframes mascot-float {
   0%,
   100% {

@@ -53,34 +53,38 @@ import { withBase } from "../lib/urls";
 
   <div class="resource-grid">
     {
-      resourceItems.map((item) => (
-        <article
-          class="resource-card surface-card"
-          data-resource-card
-          data-kind={item.kind}
-        >
-          <p class="chip chip--tone">{item.kind}</p>
-          <h3>{item.title}</h3>
-          <p>{item.description}</p>
-          <div class="resource-card__meta">
-            {item.printable && <span class="glass-chip">Print friendly</span>}
-            {item.external && (
-              <span class="glass-chip">Opens in a new tab</span>
-            )}
-          </div>
-          <a
-            class="button button--ghost"
-            href={withBase(item.href)}
-            data-astro-prefetch={
-              !item.external && item.kind === "printable" ? "hover" : undefined
-            }
-            target={item.external ? "_blank" : undefined}
-            rel={item.external ? "noopener noreferrer" : undefined}
+      resourceItems.map((item) => {
+        const isPrintable = item.kind === "printable";
+        const isExternal =
+          item.href.startsWith("http://") || item.href.startsWith("https://");
+
+        return (
+          <article
+            class="resource-card surface-card"
+            data-resource-card
+            data-kind={item.kind}
           >
-            Open resource
-          </a>
-        </article>
-      ))
+            <p class="chip chip--tone">{item.kind}</p>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+            <div class="resource-card__meta">
+              {isPrintable && <span class="glass-chip">Print friendly</span>}
+              {isExternal && <span class="glass-chip">Opens in a new tab</span>}
+            </div>
+            <a
+              class="button button--ghost"
+              href={withBase(item.href)}
+              data-astro-prefetch={
+                !isExternal && isPrintable ? "hover" : undefined
+              }
+              target={isExternal ? "_blank" : undefined}
+              rel={isExternal ? "noopener noreferrer" : undefined}
+            >
+              Open resource
+            </a>
+          </article>
+        );
+      })
     }
   </div>
 
