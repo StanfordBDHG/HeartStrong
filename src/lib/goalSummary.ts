@@ -41,6 +41,8 @@ export const resolveGoalPriority = (input: GoalSummaryInput): string => {
   return normalizeGoalValue(input.priority);
 };
 
+const stripTrailingPeriod = (value: string): string => value.replace(/\.$/, "");
+
 export const buildGoalSummary = (
   input: GoalSummaryInput,
 ): GoalSummaryOutput => {
@@ -64,23 +66,23 @@ export const buildGoalSummary = (
 
   const actionPart =
     action !== GOAL_EMPTY_STATE ?
-      action.replace(/\.$/, "")
+      stripTrailingPeriod(action)
     : "take one manageable step";
   const frequencyPart =
     frequency !== GOAL_EMPTY_STATE ?
-      ` ${frequency.replace(/\.$/, "")}`
+      ` ${stripTrailingPeriod(frequency)}`
     : " on a regular schedule";
   const priorityPart =
     priority !== GOAL_EMPTY_STATE ?
-      ` so I can ${priority.replace(/\.$/, "")}`
+      ` so I can ${stripTrailingPeriod(priority)}`
     : "";
   const supportPart =
     support !== GOAL_EMPTY_STATE ?
-      ` I will ask ${support.replace(/\.$/, "")} to help me stay on track.`
+      ` I will ask ${stripTrailingPeriod(support)} to help me stay on track.`
     : "";
   const barrierPart =
     barrier !== GOAL_EMPTY_STATE ?
-      ` I will plan ahead for ${barrier.replace(/\.$/, "")}.`
+      ` I will plan ahead for ${stripTrailingPeriod(barrier)}.`
     : "";
 
   return {

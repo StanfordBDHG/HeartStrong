@@ -90,7 +90,7 @@ import { withBase } from "../lib/urls";
               class="treatment-card__panel"
               data-state={index === 0 ? "open" : "closed"}
               aria-hidden={index === 0 ? "false" : "true"}
-              inert={index !== 0}
+              inert={index !== 0 ? true : undefined}
               data-treatment-panel
             >
               <div class="treatment-card__panel-inner">
@@ -148,6 +148,10 @@ import { withBase } from "../lib/urls";
   </div>
 
   <script>
+    const windowWithTreatmentExplorer = window as Window & {
+      __heartTreatmentExplorerPageLoadReady?: boolean;
+    };
+
     const initTreatmentExplorer = () => {
       document
         .querySelectorAll<HTMLElement>("[data-treatment-explorer]")
@@ -200,7 +204,11 @@ import { withBase } from "../lib/urls";
         });
     };
 
-    document.addEventListener("astro:page-load", initTreatmentExplorer);
+    if (!windowWithTreatmentExplorer.__heartTreatmentExplorerPageLoadReady) {
+      document.addEventListener("astro:page-load", initTreatmentExplorer);
+      windowWithTreatmentExplorer.__heartTreatmentExplorerPageLoadReady = true;
+    }
+
     initTreatmentExplorer();
   </script>
 </section>

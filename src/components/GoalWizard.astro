@@ -8,15 +8,24 @@
  */
 import MascotFigure from "./MascotFigure.astro";
 import { goalPrompts } from "../data/site";
+import type { GoalPrompt } from "../data/site";
 
-const [
-  priorityPrompt,
-  customPrompt,
-  barrierPrompt,
-  actionPrompt,
-  frequencyPrompt,
-  supportPrompt,
-] = goalPrompts;
+const getGoalPrompt = (id: GoalPrompt["id"]): GoalPrompt => {
+  const prompt = goalPrompts.find((candidate) => candidate.id === id);
+
+  if (!prompt) {
+    throw new Error(`Missing goal prompt: ${id}`);
+  }
+
+  return prompt;
+};
+
+const priorityPrompt = getGoalPrompt("priority");
+const customPrompt = getGoalPrompt("priorityCustom");
+const barrierPrompt = getGoalPrompt("barrier");
+const actionPrompt = getGoalPrompt("action");
+const frequencyPrompt = getGoalPrompt("frequency");
+const supportPrompt = getGoalPrompt("support");
 ---
 
 <section
@@ -212,6 +221,10 @@ const [
 
   <script>
     import { buildGoalSummary } from "../lib/goalSummary";
+
+    const windowWithGoalWizard = window as Window & {
+      __heartGoalWizardPageLoadReady?: boolean;
+    };
 
     const initGoalWizards = () => {
       document
@@ -415,14 +428,19 @@ const [
           printButton.addEventListener("click", () => {
             buildSummary();
             document.documentElement.dataset.printScope = "goal-summary";
+            let timeoutId: number | undefined;
             const clearPrintScope = () => {
+              if (timeoutId !== undefined) {
+                window.clearTimeout(timeoutId);
+                timeoutId = undefined;
+              }
               delete document.documentElement.dataset.printScope;
             };
             window.addEventListener("afterprint", clearPrintScope, {
               once: true,
             });
             window.print();
-            window.setTimeout(clearPrintScope, 1000);
+            timeoutId = window.setTimeout(clearPrintScope, 1000);
           });
 
           renderStep();
@@ -430,7 +448,11 @@ const [
         });
     };
 
-    document.addEventListener("astro:page-load", initGoalWizards);
+    if (!windowWithGoalWizard.__heartGoalWizardPageLoadReady) {
+      document.addEventListener("astro:page-load", initGoalWizards);
+      windowWithGoalWizard.__heartGoalWizardPageLoadReady = true;
+    }
+
     initGoalWizards();
   </script>
 </section>

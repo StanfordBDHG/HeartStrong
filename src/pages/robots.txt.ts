@@ -7,20 +7,18 @@
 import type { APIRoute } from "astro";
 import { resolveSiteUrl } from "../lib/urls";
 
-const getRobotsTxt = (site: URL | string) => `User-agent: *
+const getRobotsTxt = (site?: URL | string) => `User-agent: *
 Allow: /
-
-Sitemap: ${resolveSiteUrl(site, "/sitemap-index.xml").toString()}
+${
+  site ?
+    `\nSitemap: ${resolveSiteUrl(site, "/sitemap-index.xml").toString()}`
+  : ""
+}
 `;
 
 export const GET: APIRoute = ({ site }) =>
-  new Response(
-    getRobotsTxt(
-      site ?? new URL("https://stanfordbdhg.github.io/HeartStrong/"),
-    ),
-    {
-      headers: {
-        "Content-Type": "text/plain; charset=utf-8",
-      },
+  new Response(getRobotsTxt(site), {
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
     },
-  );
+  });

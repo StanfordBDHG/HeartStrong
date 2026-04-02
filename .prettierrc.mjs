@@ -11,6 +11,7 @@ export default {
   ...prettierConfig,
   plugins: ["prettier-plugin-astro", ...(prettierConfig.plugins ?? [])],
   overrides: [
+    ...(prettierConfig.overrides ?? []),
     {
       files: "*.astro",
       options: {

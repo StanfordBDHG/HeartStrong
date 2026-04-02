@@ -6,6 +6,7 @@
 
 export const prefixBase = (baseUrl: string, path: string): string => {
   if (
+    path.startsWith("//") ||
     path.startsWith("http://") ||
     path.startsWith("https://") ||
     path.startsWith("mailto:") ||

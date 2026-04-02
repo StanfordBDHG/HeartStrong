@@ -18,6 +18,11 @@ const { hero } = Astro.props;
 const hasPageRouteCta = Boolean(
   hero.cta?.href && hero.cta.href.startsWith("/"),
 );
+const resolvedCtaHref =
+  hero.cta ?
+    hasPageRouteCta ? withBase(hero.cta.href)
+    : hero.cta.href
+  : undefined;
 ---
 
 <section class="hero-panel shell">
@@ -32,7 +37,7 @@ const hasPageRouteCta = Boolean(
           hero.cta && (
             <a
               class="button button--primary"
-              href={withBase(hero.cta.href)}
+              href={resolvedCtaHref}
               data-astro-prefetch={hasPageRouteCta ? "hover" : undefined}
             >
               {hero.cta.label}

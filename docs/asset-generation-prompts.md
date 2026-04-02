@@ -246,13 +246,14 @@ Constraints: no text, no realistic organs
 
 ### MRA
 
-````text
+```text
 Use case: illustration-story
 Asset type: medication education card art
 Primary request: create a calm icon-style illustration representing balance, protection, and fluid support
 Subject: balanced circles, supportive ring, gentle leaf-or-shield style accent
 Style/medium: polished editorial illustration
 Constraints: no text, no branded medicine imagery
+```
 
 ## Dark-Mode Adaptation Prompt
 
@@ -266,8 +267,4 @@ Composition/framing: preserve the exact original composition; do not add, remove
 Lighting/mood: soft contrast and edge clarity suitable for deep navy backgrounds
 Constraints: only adjust palette, contrast, glow, and edge highlights for dark mode; no text; no watermark; no new props
 Avoid: new scenes, different roles, missing objects, added objects, grain, paper texture, photorealism, 3D rendering
-````
-
-```
-
 ```

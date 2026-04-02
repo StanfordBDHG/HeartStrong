@@ -178,7 +178,8 @@ export const medicationIllustrations: Record<string, ThemedIllustration> = {
       alt: "",
     },
     dark: {
-      src: "/assets/illustrations/medications/arni-acei-arb-dark.png",
+      src: "/assets/illustrations/medications/arni-acei-arb-dark.webp",
+      fallbackSrc: "/assets/illustrations/medications/arni-acei-arb-dark.png",
       width: 1536,
       height: 1024,
       alt: "",

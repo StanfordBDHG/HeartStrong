@@ -109,7 +109,7 @@ body {
     ),
     linear-gradient(180deg, #fff7f4 0%, var(--color-cream) 42%, #f8f5ef 100%);
   min-height: 100vh;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -972,7 +972,7 @@ html[data-color-scheme="dark"] .treatment-card__art--light {
   height: auto;
   margin-inline: auto;
   filter: drop-shadow(0 28px 38px rgba(16, 36, 58, 0.18));
-  animation: mascotFloat 4.6s ease-in-out infinite;
+  animation: mascot-float 4.6s ease-in-out infinite;
   z-index: 2;
 }
 
@@ -1221,6 +1221,11 @@ html[data-color-scheme="dark"] .callout-band {
   display: grid;
   gap: 1.1rem;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.video-embed-grid--compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.95rem;
 }
 
 .video-card {
@@ -1811,7 +1816,7 @@ html[data-color-scheme="dark"] .focus-card {
   transform: none;
 }
 
-@keyframes mascotFloat {
+@keyframes mascot-float {
   0%,
   100% {
     transform: translateY(0px);
@@ -1858,6 +1863,10 @@ html[data-color-scheme="dark"] .focus-card {
   }
 
   .card-grid--five {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .video-embed-grid--compact {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -1974,7 +1983,7 @@ html[data-color-scheme="dark"] .focus-card {
 
 @media print {
   @page {
-    size: Letter;
+    size: letter;
     margin: 0.45in;
   }
 

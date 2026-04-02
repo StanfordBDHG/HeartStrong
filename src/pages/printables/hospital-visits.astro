@@ -8,8 +8,6 @@
  */
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { siteTitle } from "../../data/site";
-
-const rows = Array.from({ length: 1 });
 ---
 
 <BaseLayout
@@ -35,33 +33,29 @@ const rows = Array.from({ length: 1 });
       </div>
 
       <div class="hospital-grid">
-        {
-          rows.map(() => (
-            <section class="hospital-grid__card">
-              <p>
-                <strong>Date of visit:</strong>
-              </p>
-              <div class="blank-line" />
-              <p>
-                <strong>Why did you go? (symptoms)</strong>
-              </p>
-              <div class="blank-area" />
-              <p>
-                <strong>Medication changes</strong>
-              </p>
-              <div class="blank-area" />
-              <p>
-                <strong>Discharge check:</strong> Did I get a printed med list?
-                Do I know what is new?
-              </p>
-              <div class="blank-area blank-area--small" />
-              <p>
-                <strong>Follow-up appointments</strong>
-              </p>
-              <div class="blank-area blank-area--small" />
-            </section>
-          ))
-        }
+        <section class="hospital-grid__card">
+          <p>
+            <strong>Date of visit:</strong>
+          </p>
+          <div class="blank-line"></div>
+          <p>
+            <strong>Why did you go? (symptoms)</strong>
+          </p>
+          <div class="blank-area"></div>
+          <p>
+            <strong>Medication changes</strong>
+          </p>
+          <div class="blank-area"></div>
+          <p>
+            <strong>Discharge check:</strong> Did I get a printed med list? Do I know
+            what is new?
+          </p>
+          <div class="blank-area blank-area--small"></div>
+          <p>
+            <strong>Follow-up appointments</strong>
+          </p>
+          <div class="blank-area blank-area--small"></div>
+        </section>
       </div>
     </div>
   </section>

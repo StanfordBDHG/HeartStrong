@@ -85,6 +85,10 @@ import { withBase } from "../lib/urls";
   </div>
 
   <script>
+    const windowWithResourceLibrary = window as Window & {
+      __heartResourceLibraryPageLoadReady?: boolean;
+    };
+
     const initResourceLibrary = () => {
       document
         .querySelectorAll<HTMLElement>("[data-resource-library]")
@@ -118,7 +122,11 @@ import { withBase } from "../lib/urls";
         });
     };
 
-    document.addEventListener("astro:page-load", initResourceLibrary);
+    if (!windowWithResourceLibrary.__heartResourceLibraryPageLoadReady) {
+      document.addEventListener("astro:page-load", initResourceLibrary);
+      windowWithResourceLibrary.__heartResourceLibraryPageLoadReady = true;
+    }
+
     initResourceLibrary();
   </script>
 </section>

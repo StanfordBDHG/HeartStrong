@@ -18,9 +18,16 @@ interface Props {
   description: string;
   currentPath: string;
   theme?: string;
+  robots?: string;
 }
 
-const { title, description, currentPath, theme = "welcome" } = Astro.props;
+const {
+  title,
+  description,
+  currentPath,
+  theme = "welcome",
+  robots = "index,follow",
+} = Astro.props;
 const canonicalUrl =
   Astro.site ? resolveSiteUrl(Astro.site, currentPath) : undefined;
 const sitemapUrl =
@@ -36,7 +43,7 @@ const sitemapUrl =
     <meta name="description" content={description} />
     <meta name="theme-color" content="#9A1B1A" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="robots" content="index,follow" />
+    <meta name="robots" content={robots} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -91,6 +98,8 @@ const sitemapUrl =
       <slot />
     </main>
     <SiteFooter />
-    <script src="../scripts/siteChrome.ts"></script>
+    <script>
+      import "../scripts/siteChrome.ts";
+    </script>
   </body>
 </html>

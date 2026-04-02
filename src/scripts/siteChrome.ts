@@ -88,6 +88,20 @@ const initSupportRibbon = () => {
 };
 
 const initMenu = () => {
+  const closeAllMenus = () => {
+    document
+      .querySelectorAll<HTMLElement>("[data-mobile-nav]")
+      .forEach((nav) => {
+        nav.dataset.open = "false";
+      });
+
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-menu-toggle]")
+      .forEach((toggle) => {
+        toggle.setAttribute("aria-expanded", "false");
+      });
+  };
+
   document
     .querySelectorAll<HTMLButtonElement>("[data-menu-toggle]")
     .forEach((toggle) => {
@@ -97,34 +111,42 @@ const initMenu = () => {
       const nav = document.querySelector<HTMLElement>("[data-mobile-nav]");
       if (!nav) return;
 
-      const closeMenu = () => {
-        nav.dataset.open = "false";
-        toggle.setAttribute("aria-expanded", "false");
-      };
-
       toggle.addEventListener("click", () => {
         const isOpen = nav.dataset.open === "true";
+        closeAllMenus();
         nav.dataset.open = String(!isOpen);
         toggle.setAttribute("aria-expanded", String(!isOpen));
       });
 
       nav.querySelectorAll("a").forEach((link) => {
-        link.addEventListener("click", closeMenu);
-      });
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          closeMenu();
-        }
-      });
-
-      document.addEventListener("click", (event) => {
-        if (!nav.dataset.open || nav.dataset.open !== "true") return;
-        if (!(event.target instanceof Node)) return;
-        if (nav.contains(event.target) || toggle.contains(event.target)) return;
-        closeMenu();
+        link.addEventListener("click", closeAllMenus);
       });
     });
+
+  if (document.documentElement.dataset.menuListenersReady === "true") return;
+  document.documentElement.dataset.menuListenersReady = "true";
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeAllMenus();
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Node)) return;
+    const openNav = document.querySelector<HTMLElement>(
+      '[data-mobile-nav][data-open="true"]',
+    );
+    if (!openNav) return;
+
+    const toggle = document.querySelector<HTMLButtonElement>(
+      '[data-menu-toggle][aria-expanded="true"]',
+    );
+    if (openNav.contains(event.target) || toggle?.contains(event.target))
+      return;
+
+    closeAllMenus();
+  });
 };
 
 const initPrintButtons = () => {
