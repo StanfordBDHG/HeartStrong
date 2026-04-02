@@ -40,44 +40,34 @@ const mascot = mascotIllustrations[mascotKey];
 >
   {
     showScene && mascot.scene && (
-      <>
-        <picture class="mascot-figure__prop mascot-figure__prop--light">
-          {mascot.scene.light.fallbackSrc && (
-            <source
-              srcset={withBase(mascot.scene.light.src)}
-              type="image/webp"
-            />
-          )}
-          <img
-            src={withBase(
-              mascot.scene.light.fallbackSrc ?? mascot.scene.light.src,
-            )}
-            alt=""
-            width={mascot.scene.light.width}
-            height={mascot.scene.light.height}
-            loading={size === "large" ? "eager" : "lazy"}
-            aria-hidden="true"
+      <picture class="mascot-figure__prop">
+        {mascot.scene.dark.fallbackSrc && (
+          <source
+            media="(prefers-color-scheme: dark)"
+            srcset={withBase(mascot.scene.dark.src)}
+            type="image/webp"
           />
-        </picture>
-        <picture class="mascot-figure__prop mascot-figure__prop--dark">
-          {mascot.scene.dark.fallbackSrc && (
-            <source
-              srcset={withBase(mascot.scene.dark.src)}
-              type="image/webp"
-            />
+        )}
+        <source
+          media="(prefers-color-scheme: dark)"
+          srcset={withBase(
+            mascot.scene.dark.fallbackSrc ?? mascot.scene.dark.src,
           )}
-          <img
-            src={withBase(
-              mascot.scene.dark.fallbackSrc ?? mascot.scene.dark.src,
-            )}
-            alt=""
-            width={mascot.scene.dark.width}
-            height={mascot.scene.dark.height}
-            loading={size === "large" ? "eager" : "lazy"}
-            aria-hidden="true"
-          />
-        </picture>
-      </>
+        />
+        {mascot.scene.light.fallbackSrc && (
+          <source srcset={withBase(mascot.scene.light.src)} type="image/webp" />
+        )}
+        <img
+          src={withBase(
+            mascot.scene.light.fallbackSrc ?? mascot.scene.light.src,
+          )}
+          alt=""
+          width={mascot.scene.light.width}
+          height={mascot.scene.light.height}
+          loading={size === "large" ? "eager" : "lazy"}
+          aria-hidden="true"
+        />
+      </picture>
     )
   }
   <div class="mascot-figure__halo"></div>

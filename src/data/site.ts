@@ -108,8 +108,6 @@ export const navItems: NavItem[] = [
   },
 ];
 
-export const pageSequence = navItems.map((item) => item.href);
-
 export const pageHeroes: Record<string, PageHero> = {
   "/": {
     eyebrow: "Patient Action Guide",

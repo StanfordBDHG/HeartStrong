@@ -80,7 +80,7 @@ Constraints: transparent background, no built-in chart or board, no text, no swe
 Avoid: clipart style, lecture podium, complicated equipment, mismatched character design
 ```
 
-### Goal setting mascot
+### Goal-setting mascot
 
 ```text
 Use case: illustration-story

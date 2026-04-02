@@ -7,14 +7,16 @@
 import type { APIRoute } from "astro";
 import { resolveSiteUrl } from "../lib/urls";
 
-const getRobotsTxt = (site?: URL | string) => `User-agent: *
-Allow: /
-${
-  site ?
-    `\nSitemap: ${resolveSiteUrl(site, "/sitemap-index.xml").toString()}`
-  : ""
-}
-`;
+const getRobotsTxt = (site?: URL | string) =>
+  [
+    "User-agent: *",
+    "Allow: /",
+    site ?
+      `Sitemap: ${resolveSiteUrl(site, "/sitemap-index.xml").toString()}`
+    : undefined,
+  ]
+    .filter((line): line is string => line !== undefined)
+    .join("\n");
 
 export const GET: APIRoute = ({ site }) =>
   new Response(getRobotsTxt(site), {

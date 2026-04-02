@@ -925,12 +925,10 @@ html[data-support-ribbon="visible"] .hero-panel {
   height: auto;
 }
 
-html[data-color-scheme="light"] .mascot-figure__prop--dark,
-html[data-color-scheme="light"] .treatment-card__art--dark {
+html:not([data-color-scheme="dark"]) .treatment-card__art--dark {
   display: none;
 }
 
-html[data-color-scheme="dark"] .mascot-figure__prop--light,
 html[data-color-scheme="dark"] .treatment-card__art--light {
   display: none;
 }

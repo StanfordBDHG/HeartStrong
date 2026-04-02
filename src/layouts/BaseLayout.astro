@@ -10,6 +10,10 @@ import { ClientRouter } from "astro:transitions";
 import SiteFooter from "../components/SiteFooter.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SupportRibbon from "../components/SupportRibbon.astro";
+import {
+  SUPPORT_RIBBON_STORAGE_KEY,
+  THEME_COLORS,
+} from "../lib/siteChromeConfig";
 import { resolveSiteUrl, withBase } from "../lib/urls";
 import "../styles/global.css";
 
@@ -35,13 +39,20 @@ const sitemapUrl =
 ---
 
 <!doctype html>
-<html lang="en" data-color-scheme="light" data-support-ribbon="visible">
+<html
+  lang="en"
+  data-color-scheme="light"
+  data-support-ribbon="visible"
+  data-theme-color-light={THEME_COLORS.light}
+  data-theme-color-dark={THEME_COLORS.dark}
+  data-support-ribbon-storage-key={SUPPORT_RIBBON_STORAGE_KEY}
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#9A1B1A" />
+    <meta name="theme-color" content={THEME_COLORS.light} />
     <meta name="generator" content={Astro.generator} />
     <meta name="robots" content={robots} />
     <meta property="og:type" content="website" />
@@ -62,6 +73,13 @@ const sitemapUrl =
       (() => {
         const root = document.documentElement;
         const meta = document.querySelector('meta[name="theme-color"]');
+        const themeColors = {
+          light: root.dataset.themeColorLight ?? "#9A1B1A",
+          dark: root.dataset.themeColorDark ?? "#152231",
+        };
+        const supportRibbonStorageKey =
+          root.dataset.supportRibbonStorageKey ??
+          "heartstrong-support-ribbon-dismissed";
         const scheme =
           window.matchMedia("(prefers-color-scheme: dark)").matches ?
             "dark"
@@ -69,18 +87,11 @@ const sitemapUrl =
 
         root.dataset.colorScheme = scheme;
         root.style.colorScheme = scheme;
-        meta?.setAttribute(
-          "content",
-          scheme === "dark" ? "#152231" : "#9A1B1A",
-        );
+        meta?.setAttribute("content", themeColors[scheme]);
 
         try {
           root.dataset.supportRibbon =
-            (
-              window.localStorage.getItem(
-                "heartstrong-support-ribbon-dismissed",
-              ) === "true"
-            ) ?
+            window.localStorage.getItem(supportRibbonStorageKey) === "true" ?
               "hidden"
             : "visible";
         } catch {

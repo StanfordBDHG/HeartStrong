@@ -128,7 +128,7 @@ const supportPrompt = getGoalPrompt("support");
         </div>
       </form>
 
-      <aside class="goal-summary surface-card" aria-live="polite">
+      <aside class="goal-summary surface-card">
         <div class="goal-summary__top">
           <div>
             <p class="eyebrow">My HeartStrong Goal</p>
@@ -185,6 +185,13 @@ const supportPrompt = getGoalPrompt("support");
           your care team.
         </p>
       </aside>
+      <p
+        class="sr-only"
+        data-summary-announcer
+        aria-live="polite"
+        aria-atomic="true"
+      >
+      </p>
     </div>
   </div>
 
@@ -254,6 +261,9 @@ const supportPrompt = getGoalPrompt("support");
           const priorityCustom = root.querySelector<HTMLInputElement>(
             'input[name="priorityCustom"]',
           );
+          const priorityButtons = root.querySelectorAll<HTMLButtonElement>(
+            "[data-priority-choice]",
+          );
           const summaryText = root.querySelector<HTMLElement>(
             "[data-summary-text]",
           );
@@ -294,6 +304,9 @@ const supportPrompt = getGoalPrompt("support");
             root.querySelector<HTMLButtonElement>("[data-copy-goal]");
           const printButton =
             root.querySelector<HTMLButtonElement>("[data-print-goal]");
+          const summaryAnnouncer = root.querySelector<HTMLElement>(
+            "[data-summary-announcer]",
+          );
 
           if (
             !form ||
@@ -323,6 +336,22 @@ const supportPrompt = getGoalPrompt("support");
 
           let currentStep = 0;
 
+          const syncPrioritySelection = () => {
+            const hasCustomPriority = priorityCustom.value.trim().length > 0;
+
+            if (hasCustomPriority) {
+              priorityField.value = "";
+            }
+
+            priorityButtons.forEach((candidate) => {
+              const isSelected =
+                !hasCustomPriority &&
+                candidate.dataset.value === priorityField.value;
+              candidate.classList.toggle("is-selected", isSelected);
+              candidate.setAttribute("aria-pressed", String(isSelected));
+            });
+          };
+
           const buildSummary = () => {
             const data = new FormData(form);
             const summary = buildGoalSummary({
@@ -348,6 +377,11 @@ const supportPrompt = getGoalPrompt("support");
             printSummaryText.textContent = summary.statement;
           };
 
+          const announceSummary = () => {
+            if (!summaryAnnouncer) return;
+            summaryAnnouncer.textContent = summaryText.textContent ?? "";
+          };
+
           const renderStep = () => {
             steps.forEach((step, index) => {
               const isActive = index === currentStep;
@@ -362,36 +396,35 @@ const supportPrompt = getGoalPrompt("support");
             progressLabel.textContent = `Step ${currentStep + 1} of ${steps.length}`;
           };
 
-          root
-            .querySelectorAll<HTMLButtonElement>("[data-priority-choice]")
-            .forEach((button) => {
-              button.addEventListener("click", () => {
-                const value = button.dataset.value ?? "";
-                priorityField.value = value;
-                priorityCustom.value = "";
-
-                root
-                  .querySelectorAll<HTMLButtonElement>("[data-priority-choice]")
-                  .forEach((candidate) => {
-                    candidate.classList.toggle(
-                      "is-selected",
-                      candidate === button,
-                    );
-                    candidate.setAttribute(
-                      "aria-pressed",
-                      String(candidate === button),
-                    );
-                  });
-
-                buildSummary();
-              });
+          priorityButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+              const value = button.dataset.value ?? "";
+              priorityField.value = value;
+              priorityCustom.value = "";
+              syncPrioritySelection();
+              buildSummary();
+              announceSummary();
             });
+          });
 
-          form.addEventListener("input", buildSummary);
+          form.addEventListener("input", () => {
+            syncPrioritySelection();
+            buildSummary();
+          });
+
+          form.addEventListener("focusout", (event) => {
+            if (
+              event.target instanceof HTMLInputElement ||
+              event.target instanceof HTMLTextAreaElement
+            ) {
+              announceSummary();
+            }
+          });
 
           prevButton.addEventListener("click", () => {
             currentStep = Math.max(0, currentStep - 1);
             renderStep();
+            announceSummary();
           });
 
           nextButton.addEventListener("click", () => {
@@ -400,6 +433,7 @@ const supportPrompt = getGoalPrompt("support");
             }
             renderStep();
             buildSummary();
+            announceSummary();
           });
 
           copyButton.addEventListener("click", async () => {
@@ -444,6 +478,7 @@ const supportPrompt = getGoalPrompt("support");
           });
 
           renderStep();
+          syncPrioritySelection();
           buildSummary();
         });
     };

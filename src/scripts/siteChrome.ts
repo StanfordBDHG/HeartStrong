@@ -4,23 +4,31 @@
 //
 // SPDX-License-Identifier: MIT
 
+import {
+  SUPPORT_RIBBON_STORAGE_KEY,
+  THEME_COLORS,
+} from "../lib/siteChromeConfig";
+
 const windowWithObserver = window as Window & {
   __heartThemeListenerReady?: boolean;
   __heartChromeListenersReady?: boolean;
   __heartChromeInitScheduled?: boolean;
 };
 
-const SUPPORT_RIBBON_STORAGE_KEY = "heartstrong-support-ribbon-dismissed";
-const THEME_COLORS = {
-  light: "#9A1B1A",
-  dark: "#152231",
-} as const;
-
 type ColorScheme = keyof typeof THEME_COLORS;
+
+const getThemeColors = (): Record<ColorScheme, string> => ({
+  light: document.documentElement.dataset.themeColorLight ?? THEME_COLORS.light,
+  dark: document.documentElement.dataset.themeColorDark ?? THEME_COLORS.dark,
+});
+
+const getSupportRibbonStorageKey = () =>
+  document.documentElement.dataset.supportRibbonStorageKey ??
+  SUPPORT_RIBBON_STORAGE_KEY;
 
 const getSupportRibbonDismissed = () => {
   try {
-    return window.localStorage.getItem(SUPPORT_RIBBON_STORAGE_KEY) === "true";
+    return window.localStorage.getItem(getSupportRibbonStorageKey()) === "true";
   } catch {
     return false;
   }
@@ -37,7 +45,7 @@ const applyColorScheme = (scheme: ColorScheme) => {
   document.documentElement.style.colorScheme = scheme;
   document
     .querySelector('meta[name="theme-color"]')
-    ?.setAttribute("content", THEME_COLORS[scheme]);
+    ?.setAttribute("content", getThemeColors()[scheme]);
 };
 
 const initColorScheme = () => {
@@ -77,7 +85,7 @@ const initSupportRibbon = () => {
 
       button.addEventListener("click", () => {
         try {
-          window.localStorage.setItem(SUPPORT_RIBBON_STORAGE_KEY, "true");
+          window.localStorage.setItem(getSupportRibbonStorageKey(), "true");
         } catch {
           // Ignore storage failures and still hide the ribbon for this page.
         }
