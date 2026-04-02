@@ -1,0 +1,68 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { siteTitle } from "../../data/site";
+
+const rows = Array.from({ length: 1 });
+---
+
+<BaseLayout
+  title={`${siteTitle} | Hospitalization or ED Visit Log`}
+  description="Printable hospitalization or emergency visit log to track symptoms, medication changes, and follow-up plans."
+  currentPath="/printables/hospital-visits"
+  theme="resources"
+>
+  <section class="section-block shell printable-shell" data-reveal>
+    <div class="print-sheet surface-card">
+      <div class="print-sheet__header">
+        <div>
+          <p class="eyebrow">Printable tracker</p>
+          <h1>Hospitalization or ED Visit</h1>
+        </div>
+        <button
+          class="button button--primary print-only-button"
+          type="button"
+          data-print-page
+        >
+          Print this page
+        </button>
+      </div>
+
+      <div class="hospital-grid">
+        {
+          rows.map(() => (
+            <section class="hospital-grid__card">
+              <p>
+                <strong>Date of visit:</strong>
+              </p>
+              <div class="blank-line" />
+              <p>
+                <strong>Why did you go? (symptoms)</strong>
+              </p>
+              <div class="blank-area" />
+              <p>
+                <strong>Medication changes</strong>
+              </p>
+              <div class="blank-area" />
+              <p>
+                <strong>Discharge check:</strong> Did I get a printed med list?
+                Do I know what is new?
+              </p>
+              <div class="blank-area blank-area--small" />
+              <p>
+                <strong>Follow-up appointments</strong>
+              </p>
+              <div class="blank-area blank-area--small" />
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

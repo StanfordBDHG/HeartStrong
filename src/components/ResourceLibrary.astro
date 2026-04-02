@@ -1,0 +1,124 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import { resourceItems } from "../data/site";
+import { withBase } from "../lib/urls";
+---
+
+<section id="resource-library" class="shell" data-resource-library data-reveal>
+  <div class="section-heading">
+    <p class="eyebrow">Library of resources</p>
+    <h2>Choose printables or support tools.</h2>
+    <p>
+      Use the filters to focus on what you need today, then print or bookmark
+      the tools you want to bring back to your booklet.
+    </p>
+  </div>
+
+  <div
+    class="filter-toolbar glass-panel"
+    role="toolbar"
+    aria-label="Resource filters"
+  >
+    <button
+      type="button"
+      class="filter-chip is-active"
+      data-filter="all"
+      aria-pressed="true">All</button
+    >
+    <button
+      type="button"
+      class="filter-chip"
+      data-filter="printable"
+      aria-pressed="false">Printable</button
+    >
+    <button
+      type="button"
+      class="filter-chip"
+      data-filter="guide"
+      aria-pressed="false">Guides</button
+    >
+    <button
+      type="button"
+      class="filter-chip"
+      data-filter="external"
+      aria-pressed="false">External tools</button
+    >
+  </div>
+
+  <div class="resource-grid">
+    {
+      resourceItems.map((item) => (
+        <article
+          class="resource-card surface-card"
+          data-resource-card
+          data-kind={item.kind}
+        >
+          <p class="chip chip--tone">{item.kind}</p>
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+          <div class="resource-card__meta">
+            {item.printable && <span class="glass-chip">Print friendly</span>}
+            {item.external && (
+              <span class="glass-chip">Opens in a new tab</span>
+            )}
+          </div>
+          <a
+            class="button button--ghost"
+            href={withBase(item.href)}
+            data-astro-prefetch={
+              !item.external && item.kind === "printable" ? "hover" : undefined
+            }
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener noreferrer" : undefined}
+          >
+            Open resource
+          </a>
+        </article>
+      ))
+    }
+  </div>
+
+  <script>
+    const initResourceLibrary = () => {
+      document
+        .querySelectorAll<HTMLElement>("[data-resource-library]")
+        .forEach((root) => {
+          if (root.dataset.ready === "true") return;
+          root.dataset.ready = "true";
+
+          const filterButtons =
+            root.querySelectorAll<HTMLButtonElement>("[data-filter]");
+          const cards = root.querySelectorAll<HTMLElement>(
+            "[data-resource-card]",
+          );
+
+          filterButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+              const filter = button.dataset.filter;
+
+              filterButtons.forEach((candidate) => {
+                const isActive = candidate === button;
+                candidate.classList.toggle("is-active", isActive);
+                candidate.setAttribute("aria-pressed", String(isActive));
+              });
+
+              cards.forEach((card) => {
+                const kind = card.dataset.kind;
+                const show = filter === "all" || filter === kind;
+                card.toggleAttribute("hidden", !show);
+              });
+            });
+          });
+        });
+    };
+
+    document.addEventListener("astro:page-load", initResourceLibrary);
+    initResourceLibrary();
+  </script>
+</section>

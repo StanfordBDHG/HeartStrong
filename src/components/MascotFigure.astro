@@ -1,0 +1,109 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import type { MascotKey } from "../data/site";
+import { mascotIllustrations } from "../data/illustrations";
+import { withBase } from "../lib/urls";
+
+interface Props {
+  mascotKey: MascotKey;
+  alt?: string;
+  size?: "large" | "small";
+  showLabel?: boolean;
+  showScene?: boolean;
+  decorative?: boolean;
+}
+
+const {
+  mascotKey,
+  alt,
+  size = "large",
+  showLabel = size === "large",
+  showScene = size === "large",
+  decorative = false,
+} = Astro.props;
+const mascot = mascotIllustrations[mascotKey];
+---
+
+<figure
+  class:list={[
+    "mascot-figure",
+    `mascot-figure--${size}`,
+    `mascot-figure--${mascotKey}`,
+  ]}
+  data-reveal
+>
+  {
+    showScene && mascot.scene && (
+      <>
+        <picture class="mascot-figure__prop mascot-figure__prop--light">
+          {mascot.scene.light.fallbackSrc && (
+            <source
+              srcset={withBase(mascot.scene.light.src)}
+              type="image/webp"
+            />
+          )}
+          <img
+            src={withBase(
+              mascot.scene.light.fallbackSrc ?? mascot.scene.light.src,
+            )}
+            alt=""
+            width={mascot.scene.light.width}
+            height={mascot.scene.light.height}
+            loading={size === "large" ? "eager" : "lazy"}
+            aria-hidden="true"
+          />
+        </picture>
+        <picture class="mascot-figure__prop mascot-figure__prop--dark">
+          {mascot.scene.dark.fallbackSrc && (
+            <source
+              srcset={withBase(mascot.scene.dark.src)}
+              type="image/webp"
+            />
+          )}
+          <img
+            src={withBase(
+              mascot.scene.dark.fallbackSrc ?? mascot.scene.dark.src,
+            )}
+            alt=""
+            width={mascot.scene.dark.width}
+            height={mascot.scene.dark.height}
+            loading={size === "large" ? "eager" : "lazy"}
+            aria-hidden="true"
+          />
+        </picture>
+      </>
+    )
+  }
+  <div class="mascot-figure__halo"></div>
+  {
+    showLabel && (
+      <figcaption class="mascot-figure__label glass-chip">
+        {mascot.label}
+      </figcaption>
+    )
+  }
+  <picture>
+    {
+      mascot.mascot.fallbackSrc && (
+        <source srcset={withBase(mascot.mascot.src)} type="image/webp" />
+      )
+    }
+    <img
+      class="mascot-figure__image"
+      src={withBase(mascot.mascot.fallbackSrc ?? mascot.mascot.src)}
+      alt={decorative ? "" : (alt ?? mascot.mascot.alt)}
+      width={mascot.mascot.width}
+      height={mascot.mascot.height}
+      loading={size === "large" ? "eager" : "lazy"}
+      fetchpriority={size === "large" ? "high" : undefined}
+      decoding="async"
+      aria-hidden={decorative ? "true" : undefined}
+    />
+  </picture>
+</figure>

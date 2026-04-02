@@ -1,0 +1,54 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import { navItems, quickSupport } from "../data/site";
+import { withBase } from "../lib/urls";
+---
+
+<footer class="site-footer">
+  <div class="shell site-footer__grid">
+    <div class="site-footer__column">
+      <p class="eyebrow">Bring your booklet</p>
+      <h2>Keep HeartStrong with you between visits.</h2>
+      <p>
+        Use this site to review the same ideas you see in the booklet, then
+        bring your questions, trackers, and goals to every appointment.
+      </p>
+    </div>
+
+    <div class="site-footer__column">
+      <p class="eyebrow">Explore</p>
+      <ul class="footer-links">
+        {
+          navItems.map((item) => (
+            <li>
+              <a href={withBase(item.href)} data-astro-prefetch="hover">
+                {item.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="site-footer__column">
+      <p class="eyebrow">Support</p>
+      <p>{quickSupport.emergencyLabel}</p>
+      <p>
+        <strong>Veterans Crisis Line:</strong>
+        {quickSupport.crisisPhone}
+        <br />
+        <strong>Text:</strong>
+        {quickSupport.crisisText}
+      </p>
+      <a href={quickSupport.crisisUrl} target="_blank" rel="noopener noreferrer"
+        >Open crisis support</a
+      >
+    </div>
+  </div>
+</footer>

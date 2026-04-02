@@ -1,0 +1,57 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import type { PageHero } from "../data/site";
+import { withBase } from "../lib/urls";
+import MascotFigure from "./MascotFigure.astro";
+
+interface Props {
+  hero: PageHero;
+}
+
+const { hero } = Astro.props;
+const hasPageRouteCta = Boolean(
+  hero.cta?.href && hero.cta.href.startsWith("/"),
+);
+---
+
+<section class="hero-panel shell">
+  <div class="hero-panel__grid">
+    <div class="hero-panel__copy glass-panel" data-reveal>
+      <p class="eyebrow">{hero.eyebrow}</p>
+      <h1>{hero.title}</h1>
+      <p class="hero-panel__intro">{hero.intro}</p>
+
+      <div class="hero-panel__actions">
+        {
+          hero.cta && (
+            <a
+              class="button button--primary"
+              href={withBase(hero.cta.href)}
+              data-astro-prefetch={hasPageRouteCta ? "hover" : undefined}
+            >
+              {hero.cta.label}
+            </a>
+          )
+        }
+      </div>
+
+      <div class="hero-panel__detail-bar">
+        <span class="glass-chip"
+          >Bring your HeartStrong booklet to every appointment</span
+        >
+        <span class="glass-chip">Patient-friendly education and tools</span>
+      </div>
+      <slot />
+    </div>
+
+    <div class="hero-panel__media">
+      <MascotFigure mascotKey={hero.mascotKey} showLabel={false} />
+    </div>
+  </div>
+</section>

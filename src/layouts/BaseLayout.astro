@@ -1,0 +1,96 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import { ClientRouter } from "astro:transitions";
+import SiteFooter from "../components/SiteFooter.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import SupportRibbon from "../components/SupportRibbon.astro";
+import { resolveSiteUrl, withBase } from "../lib/urls";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  currentPath: string;
+  theme?: string;
+}
+
+const { title, description, currentPath, theme = "welcome" } = Astro.props;
+const canonicalUrl =
+  Astro.site ? resolveSiteUrl(Astro.site, currentPath) : undefined;
+const sitemapUrl =
+  Astro.site ? resolveSiteUrl(Astro.site, "/sitemap-index.xml") : undefined;
+---
+
+<!doctype html>
+<html lang="en" data-color-scheme="light" data-support-ribbon="visible">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#9A1B1A" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <link rel="icon" href={withBase("/favicon.svg")} type="image/svg+xml" />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl.toString()} />}
+    {
+      canonicalUrl && (
+        <meta property="og:url" content={canonicalUrl.toString()} />
+      )
+    }
+    {sitemapUrl && <link rel="sitemap" href={sitemapUrl.toString()} />}
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const meta = document.querySelector('meta[name="theme-color"]');
+        const scheme =
+          window.matchMedia("(prefers-color-scheme: dark)").matches ?
+            "dark"
+          : "light";
+
+        root.dataset.colorScheme = scheme;
+        root.style.colorScheme = scheme;
+        meta?.setAttribute(
+          "content",
+          scheme === "dark" ? "#152231" : "#9A1B1A",
+        );
+
+        try {
+          root.dataset.supportRibbon =
+            (
+              window.localStorage.getItem(
+                "heartstrong-support-ribbon-dismissed",
+              ) === "true"
+            ) ?
+              "hidden"
+            : "visible";
+        } catch {
+          root.dataset.supportRibbon = "visible";
+        }
+      })();
+    </script>
+    <ClientRouter fallback="swap" />
+  </head>
+  <body class="site-body" data-theme={theme}>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <SiteHeader currentPath={currentPath} />
+    <SupportRibbon />
+    <main id="main-content" class="site-main">
+      <slot />
+    </main>
+    <SiteFooter />
+    <script src="../scripts/siteChrome.ts"></script>
+  </body>
+</html>
