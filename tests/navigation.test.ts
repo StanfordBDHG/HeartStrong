@@ -7,7 +7,7 @@
 import { describe, expect, it } from "vitest";
 import { navItems } from "../src/data/site";
 import { getPageNeighbors } from "../src/lib/navigation";
-import { prefixBase, resolveSiteUrl } from "../src/lib/urls";
+import { prefixBase, resolveSiteUrl, withBase } from "../src/lib/urls";
 
 describe("navigation helpers", () => {
   it("returns previous and next pages for an interior route", () => {
@@ -51,6 +51,12 @@ describe("navigation helpers", () => {
     expect(prefixBase("/HeartStrong/", "tel:+18005551212")).toBe(
       "tel:+18005551212",
     );
+  });
+
+  it("applies the configured base URL when building internal links", () => {
+    expect(withBase("/resources")).toBe("/resources");
+    expect(withBase("printables/vitals")).toBe("/printables/vitals");
+    expect(withBase("#goal-wizard")).toBe("#goal-wizard");
   });
 
   it("resolves URLs correctly for GitHub Pages project-site metadata", () => {

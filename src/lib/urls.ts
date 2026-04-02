@@ -20,8 +20,17 @@ export const prefixBase = (baseUrl: string, path: string): string => {
   return `${normalizedBase}${normalizedPath}` || "/";
 };
 
+interface ImportMetaEnvWithBaseUrl {
+  BASE_URL?: unknown;
+}
+
+const resolveBaseUrl = (): string => {
+  const baseUrl = (import.meta.env as ImportMetaEnvWithBaseUrl).BASE_URL;
+  return typeof baseUrl === "string" ? baseUrl : "/";
+};
+
 export const withBase = (path: string): string =>
-  prefixBase(import.meta.env.BASE_URL, path);
+  prefixBase(resolveBaseUrl(), path);
 
 export const resolveSiteUrl = (site: URL | string, path: string): URL => {
   const siteRoot = new URL(site);
