@@ -1,0 +1,134 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import HeroPanel from "../components/HeroPanel.astro";
+import PageNavigator from "../components/PageNavigator.astro";
+import VideoLibrary from "../components/VideoLibrary.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { pageHeroes, siteTitle, symptomGuide } from "../data/site";
+
+const hero = pageHeroes["/hf-basics"];
+const efCards = [
+  {
+    title: "Normal EF: 50% to 70%",
+    body: "This means the left side of the heart is pumping out a typical amount of blood with each beat.",
+  },
+  {
+    title: "HFpEF",
+    body: "Heart failure can still happen when ejection fraction is preserved. Your heart may be stiff or not fill the way it should.",
+  },
+  {
+    title: "Reduced EF: Under 50%",
+    body: "When EF is reduced, your team may recommend specific medication classes to help protect your heart over time.",
+  },
+];
+---
+
+<BaseLayout
+  title={`${siteTitle} | HF Basics`}
+  description={hero.intro}
+  currentPath="/hf-basics"
+  theme="basics"
+>
+  <HeroPanel hero={hero} />
+
+  <section id="hf-overview" class="section-block shell" data-reveal>
+    <div class="two-column">
+      <article class="surface-card">
+        <p class="eyebrow">What is heart failure?</p>
+        <h2>
+          Heart failure means the heart needs more support to pump or fill well.
+        </h2>
+        <p>
+          It does not mean your heart has stopped. It means your heart is
+          working under strain, and your care team uses symptoms, ejection
+          fraction, and medications to help you feel better and stay out of the
+          hospital.
+        </p>
+      </article>
+
+      <article class="surface-card">
+        <p class="eyebrow">Why medications matter</p>
+        <h3>
+          Medication plans are one of the main ways your care team protects your
+          heart.
+        </h3>
+        <p>
+          Some medications lower pressure, some slow the heart, and some help
+          remove extra fluid. Your ejection fraction helps your team decide
+          which combinations are most helpful for you.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="section-block shell" data-reveal>
+    <div class="section-heading">
+      <p class="eyebrow">Ejection fraction</p>
+      <h2>
+        EF is the percent of blood the left side of the heart pumps out with
+        each beat.
+      </h2>
+      <p>
+        Use this as a conversation starter with your team. The number helps
+        guide treatment, but it is only one part of your overall picture.
+      </p>
+    </div>
+    <div class="card-grid">
+      {
+        efCards.map((item) => (
+          <article class="surface-card">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <section id="symptom-guide" class="section-block shell" data-reveal>
+    <div class="section-heading">
+      <p class="eyebrow">Symptom guide</p>
+      <h2>Use your booklet symptom tracker to notice changes early.</h2>
+      <p>
+        The goal is not to memorize every symptom. It is to recognize when
+        things feel different and know when to call your care team or get urgent
+        help.
+      </p>
+    </div>
+
+    <div class="symptom-grid">
+      {
+        symptomGuide.map((item) => (
+          <article class:list={["symptom-card", `symptom-card--${item.tone}`]}>
+            <h3>{item.state}</h3>
+            <ul>
+              {item.items.map((entry) => (
+                <li>{entry}</li>
+              ))}
+            </ul>
+            <p>
+              <strong>Action:</strong> {item.action}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <VideoLibrary
+    id="hf-video-learning"
+    placement="hf-basics"
+    compact={true}
+    eyebrow="Video learning"
+    title="Follow HeartStrong with ENGAGE-HF education."
+    intro="These short ENGAGE-HF videos reinforce the same topics covered on this page: what heart failure means, why medicines matter, what to track at home, and what dizziness can mean."
+  />
+
+  <PageNavigator currentPath="/hf-basics" />
+</BaseLayout>

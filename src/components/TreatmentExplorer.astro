@@ -1,0 +1,214 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import { medicationIllustrations } from "../data/illustrations";
+import { medicationClasses } from "../data/site";
+import { withBase } from "../lib/urls";
+---
+
+<section
+  id="medication-explorer"
+  class="section-block shell"
+  data-treatment-explorer
+  data-reveal
+>
+  <div class="section-heading">
+    <p class="eyebrow">Medication guide</p>
+    <h2>The four core training groups</h2>
+    <p>
+      Tap any class to learn what it does, what side effects to ask about, and
+      how familiar it feels right now. Your selections stay on this device only.
+    </p>
+  </div>
+
+  <div class="treatment-grid">
+    {
+      medicationClasses.map((item, index) => {
+        const image = medicationIllustrations[item.slug];
+        const panelId = `panel-${item.slug}`;
+
+        return (
+          <article class="treatment-card surface-card">
+            <button
+              class="treatment-card__toggle"
+              type="button"
+              aria-expanded={index === 0 ? "true" : "false"}
+              aria-controls={panelId}
+              data-treatment-toggle
+            >
+              <div class="treatment-card__media">
+                <picture class="treatment-card__art treatment-card__art--light">
+                  {image.light.fallbackSrc && (
+                    <source
+                      srcset={withBase(image.light.src)}
+                      type="image/webp"
+                    />
+                  )}
+                  <img
+                    src={withBase(image.light.fallbackSrc ?? image.light.src)}
+                    alt=""
+                    width={image.light.width}
+                    height={image.light.height}
+                    loading="lazy"
+                    aria-hidden="true"
+                  />
+                </picture>
+                <picture class="treatment-card__art treatment-card__art--dark">
+                  {image.dark.fallbackSrc && (
+                    <source
+                      srcset={withBase(image.dark.src)}
+                      type="image/webp"
+                    />
+                  )}
+                  <img
+                    src={withBase(image.dark.fallbackSrc ?? image.dark.src)}
+                    alt=""
+                    width={image.dark.width}
+                    height={image.dark.height}
+                    loading="lazy"
+                    aria-hidden="true"
+                  />
+                </picture>
+              </div>
+              <div class="treatment-card__summary">
+                <p class="chip chip--tone">{item.audience}</p>
+                <h3>{item.title}</h3>
+                <p>{item.summary}</p>
+              </div>
+              <span class="treatment-card__chevron" aria-hidden="true">
+                +
+              </span>
+            </button>
+
+            <div
+              id={panelId}
+              class="treatment-card__panel"
+              data-state={index === 0 ? "open" : "closed"}
+              aria-hidden={index === 0 ? "false" : "true"}
+              inert={index !== 0 ? true : undefined}
+              data-treatment-panel
+            >
+              <div class="treatment-card__panel-inner">
+                <p>{item.whatItDoes}</p>
+                <h4>Common side effects to ask about</h4>
+                <ul>
+                  {item.commonSideEffects.map((effect) => (
+                    <li>{effect}</li>
+                  ))}
+                </ul>
+
+                <div
+                  class="response-group"
+                  role="group"
+                  aria-label={`How familiar are you with ${item.title}?`}
+                >
+                  {item.responseStates.map((response) => (
+                    <button
+                      type="button"
+                      class="response-chip"
+                      aria-pressed="false"
+                    >
+                      {response}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </article>
+        );
+      })
+    }
+  </div>
+
+  <div class="callout-band" data-reveal>
+    <div class="callout-band__content">
+      <p class="eyebrow">Bring your tracker</p>
+      <h3>
+        Fill out your medication tracker for HFrEF or HFpEF and bring it to
+        every appointment.
+      </h3>
+      <p>
+        Your care works best when you are part of the team. Use the booklet and
+        the resource page together so medication questions are easy to carry
+        into each visit.
+      </p>
+    </div>
+    <a
+      class="button button--primary"
+      href={withBase("/resources#resource-library")}
+      data-astro-prefetch="hover"
+    >
+      Open support tools
+    </a>
+  </div>
+
+  <script>
+    const windowWithTreatmentExplorer = window as Window & {
+      __heartTreatmentExplorerPageLoadReady?: boolean;
+    };
+
+    const initTreatmentExplorer = () => {
+      document
+        .querySelectorAll<HTMLElement>("[data-treatment-explorer]")
+        .forEach((root) => {
+          if (root.dataset.ready === "true") return;
+          root.dataset.ready = "true";
+
+          const toggles = root.querySelectorAll<HTMLButtonElement>(
+            "[data-treatment-toggle]",
+          );
+          const panels = root.querySelectorAll<HTMLElement>(
+            "[data-treatment-panel]",
+          );
+
+          toggles.forEach((toggle, index) => {
+            toggle.addEventListener("click", () => {
+              toggles.forEach((button, buttonIndex) => {
+                const expanded =
+                  buttonIndex === index &&
+                  button.getAttribute("aria-expanded") !== "true";
+                button.setAttribute("aria-expanded", String(expanded));
+                panels[buttonIndex]?.setAttribute(
+                  "data-state",
+                  expanded ? "open" : "closed",
+                );
+                panels[buttonIndex]?.setAttribute(
+                  "aria-hidden",
+                  String(!expanded),
+                );
+                panels[buttonIndex]?.toggleAttribute("inert", !expanded);
+              });
+            });
+          });
+
+          root
+            .querySelectorAll<HTMLButtonElement>(".response-chip")
+            .forEach((chip) => {
+              chip.addEventListener("click", () => {
+                const group = chip.parentElement;
+                if (!group) return;
+                group
+                  .querySelectorAll<HTMLButtonElement>(".response-chip")
+                  .forEach((button) => {
+                    const isSelected = button === chip;
+                    button.classList.toggle("is-selected", isSelected);
+                    button.setAttribute("aria-pressed", String(isSelected));
+                  });
+              });
+            });
+        });
+    };
+
+    if (!windowWithTreatmentExplorer.__heartTreatmentExplorerPageLoadReady) {
+      document.addEventListener("astro:page-load", initTreatmentExplorer);
+      windowWithTreatmentExplorer.__heartTreatmentExplorerPageLoadReady = true;
+    }
+
+    initTreatmentExplorer();
+  </script>
+</section>

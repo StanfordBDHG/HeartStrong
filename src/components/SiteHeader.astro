@@ -1,0 +1,121 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import { mascotIllustrations } from "../data/illustrations";
+import { navItems, quickSupport, siteTitle } from "../data/site";
+import { withBase } from "../lib/urls";
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const brandMascot = mascotIllustrations.welcome.mascot;
+---
+
+<header class="site-header">
+  <div class="shell site-header__inner glass-panel">
+    <a
+      class="brand-mark"
+      href={withBase("/")}
+      aria-label={`${siteTitle} home`}
+      data-astro-prefetch="hover"
+    >
+      <span class="brand-mark__badge" aria-hidden="true">
+        <picture>
+          {
+            brandMascot.fallbackSrc && (
+              <source srcset={withBase(brandMascot.src)} type="image/webp" />
+            )
+          }
+          <img
+            class="brand-mark__badge-image"
+            src={withBase(brandMascot.fallbackSrc ?? brandMascot.src)}
+            alt=""
+            width={brandMascot.width}
+            height={brandMascot.height}
+            decoding="async"
+          />
+        </picture>
+        <span class="brand-mark__badge-ring"></span>
+      </span>
+      <span class="brand-mark__copy">
+        <strong>{siteTitle}</strong>
+        <small>Your guide for heart failure care</small>
+      </span>
+    </a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      data-menu-toggle
+      aria-expanded="false"
+      aria-controls="site-navigation"
+      aria-label="Toggle navigation menu"
+    >
+      Menu
+    </button>
+
+    <nav
+      id="site-navigation"
+      class="site-nav"
+      aria-label="Primary"
+      data-mobile-nav
+      data-open="false"
+    >
+      <div class="site-nav__links">
+        {
+          navItems.map((item) => {
+            const isActive =
+              item.href === "/" ?
+                currentPath === "/"
+              : currentPath === item.href ||
+                currentPath.startsWith(`${item.href}/`);
+
+            return (
+              <a
+                href={withBase(item.href)}
+                class:list={[isActive && "is-active"]}
+                aria-current={isActive ? "page" : undefined}
+                data-astro-prefetch="hover"
+              >
+                {item.shortTitle}
+              </a>
+            );
+          })
+        }
+      </div>
+      <a
+        class="button button--nav button--nav-crisis site-nav__crisis"
+        href={quickSupport.crisisUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${quickSupport.crisisCtaLabel}. ${quickSupport.crisisCallLabel}.`}
+      >
+        <span class="button--nav__stack">
+          <span class="button--nav__label">{quickSupport.crisisCtaLabel}</span>
+          <span class="button--nav__detail">{quickSupport.crisisCallLabel}</span
+          >
+        </span>
+      </a>
+    </nav>
+
+    <a
+      class="button button--nav button--nav-crisis site-header__crisis"
+      href={quickSupport.crisisUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${quickSupport.crisisCtaLabel}. ${quickSupport.crisisCallLabel}.`}
+    >
+      <span class="button--nav__stack">
+        <span class="button--nav__label">{quickSupport.crisisCtaLabel}</span>
+        <span class="button--nav__detail">{quickSupport.crisisCallLabel}</span>
+      </span>
+    </a>
+  </div>
+</header>

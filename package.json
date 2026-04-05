@@ -1,0 +1,62 @@
+{
+  "name": "heartstrong",
+  "version": "1.0.0",
+  "description": "Stanford HeartStrong patient education website",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StanfordBDHG/HeartStrong"
+  },
+  "keywords": [
+    "Stanford",
+    "Biodesign",
+    "HeartStrong",
+    "Heart Failure",
+    "Astro",
+    "GitHub Pages"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "npm@11.12.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:ci": "eslint --format json --output-file eslint_report.json .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "validate": "npm run format:check && npm run lint && npm run test:coverage && npm run check && npm run build"
+  },
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@fontsource-variable/atkinson-hyperlegible-next": "^5.2.6",
+    "@fontsource-variable/bricolage-grotesque": "^5.2.10",
+    "astro": "^6.0.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.8",
+    "@astrojs/sitemap": "^3.7.1",
+    "@stanfordspezi/spezi-web-configurations": "^0.7.0",
+    "@types/node": "^25.5.0",
+    "@vitest/coverage-v8": "^4.1.1",
+    "eslint": "^9.39.4",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-astro": "^1.6.0",
+    "globals": "^17.4.0",
+    "prettier": "^3.8.1",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.1"
+  }
+}

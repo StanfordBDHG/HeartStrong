@@ -1,0 +1,530 @@
+---
+/*
+ * This source file is part of the Stanford HeartStrong open-source project
+ *
+ * SPDX-FileCopyrightText: 2026 Stanford University and the project authors (see CONTRIBUTORS.md)
+ *
+ * SPDX-License-Identifier: MIT
+ */
+import MascotFigure from "./MascotFigure.astro";
+import { goalPrompts } from "../data/site";
+import type { GoalPrompt } from "../data/site";
+
+const getGoalPrompt = <Id extends GoalPrompt["id"]>(
+  id: Id,
+): Extract<GoalPrompt, { id: Id }> => {
+  const prompt = goalPrompts.find((candidate) => candidate.id === id);
+
+  if (!prompt) {
+    throw new Error(`Missing goal prompt: ${id}`);
+  }
+
+  return prompt as Extract<GoalPrompt, { id: Id }>;
+};
+
+const priorityPrompt = getGoalPrompt("priority");
+const customPrompt = getGoalPrompt("priorityCustom");
+const barrierPrompt = getGoalPrompt("barrier");
+const actionPrompt = getGoalPrompt("action");
+const frequencyPrompt = getGoalPrompt("frequency");
+const supportPrompt = getGoalPrompt("support");
+---
+
+<section
+  id="goal-wizard"
+  class="section-block shell"
+  data-goal-wizard-root
+  data-reveal
+>
+  <div class="goal-wizard-shell glass-panel">
+    <div class="goal-wizard-shell__header">
+      <div>
+        <p class="eyebrow">Guided Activity</p>
+        <h2>Create a HeartStrong SMART goal</h2>
+      </div>
+      <p>
+        Start with what matters most, choose one realistic action, and copy the
+        finished goal into your booklet.
+      </p>
+    </div>
+
+    <div class="goal-wizard-shell__body">
+      <form class="goal-wizard" data-goal-wizard>
+        <div class="goal-progress">
+          <span class="goal-progress__label" data-progress-label
+            >Step 1 of 5</span
+          >
+          <div class="goal-progress__track">
+            <span class="goal-progress__fill" data-progress-fill></span>
+          </div>
+        </div>
+
+        <fieldset class="wizard-step is-active" data-step>
+          <legend>{priorityPrompt.label}</legend>
+          <div class="choice-pill-group">
+            {
+              priorityPrompt.options?.map((option) => (
+                <button
+                  type="button"
+                  class="choice-pill"
+                  data-priority-choice
+                  data-value={option}
+                  aria-pressed="false"
+                >
+                  {option}
+                </button>
+              ))
+            }
+          </div>
+          <input type="hidden" name="priority" />
+          <label class="field-label" for="priorityCustom"
+            >{customPrompt.label}</label
+          >
+          <input
+            id="priorityCustom"
+            name="priorityCustom"
+            type="text"
+            class="text-field"
+          />
+        </fieldset>
+
+        <fieldset class="wizard-step" data-step hidden>
+          <legend>{barrierPrompt.label}</legend>
+          <label class="field-label" for="barrier">Barrier</label>
+          <textarea id="barrier" name="barrier" class="text-area" rows="5"
+          ></textarea>
+        </fieldset>
+
+        <fieldset class="wizard-step" data-step hidden>
+          <legend>{actionPrompt.label}</legend>
+          <label class="field-label" for="action">One next action</label>
+          <textarea id="action" name="action" class="text-area" rows="5"
+          ></textarea>
+        </fieldset>
+
+        <fieldset class="wizard-step" data-step hidden>
+          <legend>{frequencyPrompt.label}</legend>
+          <label class="field-label" for="frequency">Frequency</label>
+          <input
+            id="frequency"
+            name="frequency"
+            type="text"
+            class="text-field"
+          />
+        </fieldset>
+
+        <fieldset class="wizard-step" data-step hidden>
+          <legend>{supportPrompt.label}</legend>
+          <label class="field-label" for="support">Support</label>
+          <textarea id="support" name="support" class="text-area" rows="5"
+          ></textarea>
+        </fieldset>
+
+        <div class="wizard-controls">
+          <button type="button" class="button button--ghost" data-prev disabled
+            >Back</button
+          >
+          <button type="button" class="button button--primary" data-next
+            >Next step</button
+          >
+        </div>
+      </form>
+
+      <aside class="goal-summary surface-card">
+        <div class="goal-summary__top">
+          <div>
+            <p class="eyebrow">My HeartStrong Goal</p>
+            <p class="goal-summary__badge">Ready to copy into your booklet</p>
+          </div>
+          <div class="goal-summary__mascot">
+            <MascotFigure
+              mascotKey="celebrate"
+              size="small"
+              showLabel={false}
+              showScene={false}
+              decorative={true}
+            />
+          </div>
+        </div>
+
+        <p class="goal-summary__statement" data-summary-text>
+          Choose a priority and work through each step to build your SMART goal.
+        </p>
+
+        <dl class="goal-summary__details">
+          <div>
+            <dt>What matters most</dt>
+            <dd data-summary-priority>Not added yet</dd>
+          </div>
+          <div>
+            <dt>Barrier</dt>
+            <dd data-summary-barrier>Not added yet</dd>
+          </div>
+          <div>
+            <dt>Action</dt>
+            <dd data-summary-action>Not added yet</dd>
+          </div>
+          <div>
+            <dt>How often</dt>
+            <dd data-summary-frequency>Not added yet</dd>
+          </div>
+          <div>
+            <dt>Support</dt>
+            <dd data-summary-support>Not added yet</dd>
+          </div>
+        </dl>
+
+        <div class="goal-summary__actions">
+          <button type="button" class="button button--ghost" data-copy-goal
+            >Copy goal</button
+          >
+          <button type="button" class="button button--secondary" data-print-goal
+            >Print this</button
+          >
+        </div>
+        <p class="goal-summary__note">
+          Bring this summary back to your HeartStrong booklet and share it with
+          your care team.
+        </p>
+      </aside>
+      <p
+        class="sr-only"
+        data-summary-announcer
+        aria-live="polite"
+        aria-atomic="true"
+      >
+      </p>
+    </div>
+  </div>
+
+  <section class="goal-print-sheet" data-goal-print-sheet aria-hidden="true">
+    <p class="eyebrow">HeartStrong SMART goal</p>
+    <h1>My HeartStrong Goal</h1>
+    <p data-print-summary-text>
+      Choose a priority and work through each step to build your SMART goal.
+    </p>
+
+    <dl class="goal-print-sheet__details">
+      <div>
+        <dt>What matters most</dt>
+        <dd data-print-summary-priority>Not added yet</dd>
+      </div>
+      <div>
+        <dt>Barrier</dt>
+        <dd data-print-summary-barrier>Not added yet</dd>
+      </div>
+      <div>
+        <dt>Action</dt>
+        <dd data-print-summary-action>Not added yet</dd>
+      </div>
+      <div>
+        <dt>How often</dt>
+        <dd data-print-summary-frequency>Not added yet</dd>
+      </div>
+      <div>
+        <dt>Support</dt>
+        <dd data-print-summary-support>Not added yet</dd>
+      </div>
+    </dl>
+  </section>
+
+  <script>
+    import { buildGoalSummary } from "../lib/goalSummary";
+
+    const windowWithGoalWizard = window as Window & {
+      __heartGoalWizardPageLoadReady?: boolean;
+    };
+
+    const initGoalWizards = () => {
+      document
+        .querySelectorAll<HTMLElement>("[data-goal-wizard-root]")
+        .forEach((root) => {
+          if (root.dataset.ready === "true") return;
+          root.dataset.ready = "true";
+
+          const form =
+            root.querySelector<HTMLFormElement>("[data-goal-wizard]");
+          const steps = Array.from(
+            root.querySelectorAll<HTMLFieldSetElement>("[data-step]"),
+          );
+          const prevButton =
+            root.querySelector<HTMLButtonElement>("[data-prev]");
+          const nextButton =
+            root.querySelector<HTMLButtonElement>("[data-next]");
+          const progressFill = root.querySelector<HTMLElement>(
+            "[data-progress-fill]",
+          );
+          const progressLabel = root.querySelector<HTMLElement>(
+            "[data-progress-label]",
+          );
+          const priorityField = root.querySelector<HTMLInputElement>(
+            'input[name="priority"]',
+          );
+          const priorityCustom = root.querySelector<HTMLInputElement>(
+            'input[name="priorityCustom"]',
+          );
+          const priorityButtons = root.querySelectorAll<HTMLButtonElement>(
+            "[data-priority-choice]",
+          );
+          const summaryText = root.querySelector<HTMLElement>(
+            "[data-summary-text]",
+          );
+          const summaryPriority = root.querySelector<HTMLElement>(
+            "[data-summary-priority]",
+          );
+          const summaryBarrier = root.querySelector<HTMLElement>(
+            "[data-summary-barrier]",
+          );
+          const summaryAction = root.querySelector<HTMLElement>(
+            "[data-summary-action]",
+          );
+          const summaryFrequency = root.querySelector<HTMLElement>(
+            "[data-summary-frequency]",
+          );
+          const summarySupport = root.querySelector<HTMLElement>(
+            "[data-summary-support]",
+          );
+          const printSummaryText = root.querySelector<HTMLElement>(
+            "[data-print-summary-text]",
+          );
+          const printSummaryPriority = root.querySelector<HTMLElement>(
+            "[data-print-summary-priority]",
+          );
+          const printSummaryBarrier = root.querySelector<HTMLElement>(
+            "[data-print-summary-barrier]",
+          );
+          const printSummaryAction = root.querySelector<HTMLElement>(
+            "[data-print-summary-action]",
+          );
+          const printSummaryFrequency = root.querySelector<HTMLElement>(
+            "[data-print-summary-frequency]",
+          );
+          const printSummarySupport = root.querySelector<HTMLElement>(
+            "[data-print-summary-support]",
+          );
+          const copyButton =
+            root.querySelector<HTMLButtonElement>("[data-copy-goal]");
+          const printButton =
+            root.querySelector<HTMLButtonElement>("[data-print-goal]");
+          const summaryAnnouncer = root.querySelector<HTMLElement>(
+            "[data-summary-announcer]",
+          );
+          const requiredElements = [
+            ["[data-goal-wizard]", form],
+            ["[data-prev]", prevButton],
+            ["[data-next]", nextButton],
+            ["[data-progress-fill]", progressFill],
+            ["[data-progress-label]", progressLabel],
+            ['input[name="priority"]', priorityField],
+            ['input[name="priorityCustom"]', priorityCustom],
+            ["[data-summary-text]", summaryText],
+            ["[data-summary-priority]", summaryPriority],
+            ["[data-summary-barrier]", summaryBarrier],
+            ["[data-summary-action]", summaryAction],
+            ["[data-summary-frequency]", summaryFrequency],
+            ["[data-summary-support]", summarySupport],
+            ["[data-print-summary-text]", printSummaryText],
+            ["[data-print-summary-priority]", printSummaryPriority],
+            ["[data-print-summary-barrier]", printSummaryBarrier],
+            ["[data-print-summary-action]", printSummaryAction],
+            ["[data-print-summary-frequency]", printSummaryFrequency],
+            ["[data-print-summary-support]", printSummarySupport],
+            ["[data-copy-goal]", copyButton],
+            ["[data-print-goal]", printButton],
+          ] as const;
+
+          if (requiredElements.some(([, element]) => !element)) {
+            if (import.meta.env.DEV) {
+              const missingElements = requiredElements
+                .filter(([, element]) => !element)
+                .map(([selector]) => selector);
+
+              console.warn(
+                "[GoalWizard:initGoalWizards] Missing required elements:",
+                missingElements.join(", "),
+              );
+            }
+
+            return;
+          }
+
+          const wizardForm = form!;
+          const wizardPrevButton = prevButton!;
+          const wizardNextButton = nextButton!;
+          const wizardProgressFill = progressFill!;
+          const wizardProgressLabel = progressLabel!;
+          const wizardPriorityField = priorityField!;
+          const wizardPriorityCustom = priorityCustom!;
+          const wizardSummaryText = summaryText!;
+          const wizardSummaryPriority = summaryPriority!;
+          const wizardSummaryBarrier = summaryBarrier!;
+          const wizardSummaryAction = summaryAction!;
+          const wizardSummaryFrequency = summaryFrequency!;
+          const wizardSummarySupport = summarySupport!;
+          const wizardPrintSummaryText = printSummaryText!;
+          const wizardPrintSummaryPriority = printSummaryPriority!;
+          const wizardPrintSummaryBarrier = printSummaryBarrier!;
+          const wizardPrintSummaryAction = printSummaryAction!;
+          const wizardPrintSummaryFrequency = printSummaryFrequency!;
+          const wizardPrintSummarySupport = printSummarySupport!;
+          const wizardCopyButton = copyButton!;
+          const wizardPrintButton = printButton!;
+
+          let currentStep = 0;
+
+          const syncPrioritySelection = () => {
+            const hasCustomPriority =
+              wizardPriorityCustom.value.trim().length > 0;
+
+            if (hasCustomPriority) {
+              wizardPriorityField.value = "";
+            }
+
+            priorityButtons.forEach((candidate) => {
+              const isSelected =
+                !hasCustomPriority &&
+                candidate.dataset.value === wizardPriorityField.value;
+              candidate.classList.toggle("is-selected", isSelected);
+              candidate.setAttribute("aria-pressed", String(isSelected));
+            });
+          };
+
+          const buildSummary = () => {
+            const data = new FormData(wizardForm);
+            const summary = buildGoalSummary({
+              priority: String(data.get("priority") ?? ""),
+              priorityCustom: String(data.get("priorityCustom") ?? ""),
+              barrier: String(data.get("barrier") ?? ""),
+              action: String(data.get("action") ?? ""),
+              frequency: String(data.get("frequency") ?? ""),
+              support: String(data.get("support") ?? ""),
+            });
+
+            wizardSummaryPriority.textContent = summary.priority;
+            wizardSummaryBarrier.textContent = summary.barrier;
+            wizardSummaryAction.textContent = summary.action;
+            wizardSummaryFrequency.textContent = summary.frequency;
+            wizardSummarySupport.textContent = summary.support;
+            wizardSummaryText.textContent = summary.statement;
+            wizardPrintSummaryPriority.textContent = summary.priority;
+            wizardPrintSummaryBarrier.textContent = summary.barrier;
+            wizardPrintSummaryAction.textContent = summary.action;
+            wizardPrintSummaryFrequency.textContent = summary.frequency;
+            wizardPrintSummarySupport.textContent = summary.support;
+            wizardPrintSummaryText.textContent = summary.statement;
+          };
+
+          const announceSummary = () => {
+            if (!summaryAnnouncer) return;
+            summaryAnnouncer.textContent = wizardSummaryText.textContent ?? "";
+          };
+
+          const renderStep = () => {
+            steps.forEach((step, index) => {
+              const isActive = index === currentStep;
+              step.classList.toggle("is-active", isActive);
+              step.toggleAttribute("hidden", !isActive);
+            });
+
+            wizardPrevButton.disabled = currentStep === 0;
+            wizardNextButton.textContent =
+              currentStep === steps.length - 1 ? "Review goal" : "Next step";
+            wizardProgressFill.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
+            wizardProgressLabel.textContent = `Step ${currentStep + 1} of ${steps.length}`;
+          };
+
+          priorityButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+              const value = button.dataset.value ?? "";
+              wizardPriorityField.value = value;
+              wizardPriorityCustom.value = "";
+              syncPrioritySelection();
+              buildSummary();
+              announceSummary();
+            });
+          });
+
+          wizardForm.addEventListener("input", () => {
+            syncPrioritySelection();
+            buildSummary();
+          });
+
+          wizardForm.addEventListener("focusout", (event) => {
+            if (
+              event.target instanceof HTMLInputElement ||
+              event.target instanceof HTMLTextAreaElement
+            ) {
+              announceSummary();
+            }
+          });
+
+          wizardPrevButton.addEventListener("click", () => {
+            currentStep = Math.max(0, currentStep - 1);
+            renderStep();
+            announceSummary();
+          });
+
+          wizardNextButton.addEventListener("click", () => {
+            if (currentStep < steps.length - 1) {
+              currentStep += 1;
+            }
+            renderStep();
+            buildSummary();
+            announceSummary();
+          });
+
+          wizardCopyButton.addEventListener("click", async () => {
+            const text = [
+              wizardSummaryText.textContent,
+              `Barrier: ${wizardSummaryBarrier.textContent}`,
+              `Action: ${wizardSummaryAction.textContent}`,
+              `How often: ${wizardSummaryFrequency.textContent}`,
+              `Support: ${wizardSummarySupport.textContent}`,
+            ].join("\n");
+
+            try {
+              await navigator.clipboard.writeText(text);
+              wizardCopyButton.textContent = "Copied";
+              window.setTimeout(() => {
+                wizardCopyButton.textContent = "Copy goal";
+              }, 1600);
+            } catch {
+              wizardCopyButton.textContent = "Copy not available";
+              window.setTimeout(() => {
+                wizardCopyButton.textContent = "Copy goal";
+              }, 1800);
+            }
+          });
+
+          wizardPrintButton.addEventListener("click", () => {
+            buildSummary();
+            document.documentElement.dataset.printScope = "goal-summary";
+            let timeoutId: number | undefined;
+            const clearPrintScope = () => {
+              if (timeoutId !== undefined) {
+                window.clearTimeout(timeoutId);
+                timeoutId = undefined;
+              }
+              delete document.documentElement.dataset.printScope;
+            };
+            window.addEventListener("afterprint", clearPrintScope, {
+              once: true,
+            });
+            window.print();
+            timeoutId = window.setTimeout(clearPrintScope, 1000);
+          });
+
+          renderStep();
+          syncPrioritySelection();
+          buildSummary();
+        });
+    };
+
+    if (!windowWithGoalWizard.__heartGoalWizardPageLoadReady) {
+      document.addEventListener("astro:page-load", initGoalWizards);
+      windowWithGoalWizard.__heartGoalWizardPageLoadReady = true;
+    }
+
+    initGoalWizards();
+  </script>
+</section>
