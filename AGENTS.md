@@ -60,14 +60,14 @@ Check the current implementation before changing anything. Reuse the existing pa
 
 Main source-of-truth files:
 
-- Content, routes, page heroes, videos, medication data: [`src/data/site.ts`](/Users/paulschmiedmayer/Developer/HeartStrong/src/data/site.ts)
-- Illustration metadata and themed assets: [`src/data/illustrations.ts`](/Users/paulschmiedmayer/Developer/HeartStrong/src/data/illustrations.ts)
-- Shared layout and page shell: [`src/layouts/BaseLayout.astro`](/Users/paulschmiedmayer/Developer/HeartStrong/src/layouts/BaseLayout.astro)
-- Global styling and design tokens: [`src/styles/global.css`](/Users/paulschmiedmayer/Developer/HeartStrong/src/styles/global.css)
+- Content, routes, page heroes, videos, medication data: [`src/data/site.ts`](src/data/site.ts)
+- Illustration metadata and themed assets: [`src/data/illustrations.ts`](src/data/illustrations.ts)
+- Shared layout and page shell: [`src/layouts/BaseLayout.astro`](src/layouts/BaseLayout.astro)
+- Global styling and design tokens: [`src/styles/global.css`](src/styles/global.css)
 - Interactive components and page UI: `src/components/*`
-- Shared browser behavior: [`src/scripts/siteChrome.ts`](/Users/paulschmiedmayer/Developer/HeartStrong/src/scripts/siteChrome.ts)
-- Scripts, checks, and dependency versions: [`package.json`](/Users/paulschmiedmayer/Developer/HeartStrong/package.json)
-- CI and deployment behavior: [`.github/workflows`](/Users/paulschmiedmayer/Developer/HeartStrong/.github/workflows)
+- Shared browser behavior: [`src/scripts/siteChrome.ts`](src/scripts/siteChrome.ts)
+- Scripts, checks, and dependency versions: [`package.json`](package.json)
+- CI and deployment behavior: [`.github/workflows`](.github/workflows)
 
 ## Safe editing workflow
 
